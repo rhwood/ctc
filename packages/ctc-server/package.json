@@ -1,0 +1,53 @@
+{
+  "name": "ctc-server",
+  "description": "Centralized Traffic Control Server for model railroads",
+  "version": "0.0.0",
+  "author": "Randall Wood @rhwood",
+  "bin": {
+    "ctc-server": "./bin/run"
+  },
+  "bugs": "https://github.com/rhwood/ctc-server/issues",
+  "dependencies": {
+    "@oclif/command": "^1.4.36",
+    "@oclif/config": "^1.6.33",
+    "@oclif/plugin-help": "^2.0.5",
+    "tslib": "^1.9.3"
+  },
+  "devDependencies": {
+    "@oclif/test": "^1.1.0",
+    "@oclif/tslint": "^1.1.2",
+    "@types/chai": "^4.1.4",
+    "@types/mocha": "^5.2.5",
+    "@types/node": "^10.5.7",
+    "chai": "^4.1.2",
+    "mocha": "^5.2.0",
+    "nyc": "^12.0.2",
+    "ts-node": "^6.2.0",
+    "tslint": "^5.11.0",
+    "typescript": "^2.9.2"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "files": [
+    "/bin",
+    "/lib"
+  ],
+  "homepage": "https://github.com/rhwood/ctc-server",
+  "keywords": [
+    "oclif"
+  ],
+  "license": "Apache-2.0",
+  "main": "lib/index.js",
+  "oclif": {
+    "bin": "ctc-server"
+  },
+  "repository": "rhwood/ctc-server",
+  "scripts": {
+    "posttest": "tsc -p test --noEmit && tslint -p test -t stylish",
+    "prepack": "rm -rf lib && tsc",
+    "prepare": "rm -rf lib && tsc",
+    "test": "nyc mocha --forbid-only \"test/**/*.test.ts\""
+  },
+  "types": "lib/index.d.ts"
+}
