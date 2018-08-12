@@ -1,4 +1,5 @@
 import http = require('http')
+import {IPC} from 'node-ipc'
 
 export class CtcServer {
 
@@ -10,6 +11,7 @@ export class CtcServer {
     response.setHeader('Content-Type', 'text/plain');
     response.end('Hello World\n');
   })
+  readonly ipcServer: IPC.Server
 
   constructor(hostname: string, port: number, socket: string) {
     this.hostname = hostname
@@ -21,5 +23,6 @@ export class CtcServer {
     this.server.listen(this.port, this.hostname, () => {
       console.log(`Server running at http://${this.hostname}:${this.port}/`)
     })
+
   }
 }
