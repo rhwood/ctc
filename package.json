@@ -1,7 +1,10 @@
 {
   "name": "root",
   "private": true,
+  "bin": {
+    "ctc": "./packages/ctc-cli/bin/run"
+  },
   "devDependencies": {
-    "lerna": "^3.0.3"
+    "lerna": "^3.4.3"
   }
 }
