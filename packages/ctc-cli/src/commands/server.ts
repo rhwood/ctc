@@ -19,6 +19,10 @@ export default class Server extends Command {
   async run() {
     const {args, flags} = this.parse(Server)
 
+    if (!args.project) {
+      this.error('Project not specified')
+    }
+
     if (this.config.debug) {
       this.log('Starting server...')
     }

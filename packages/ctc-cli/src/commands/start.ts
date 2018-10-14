@@ -49,6 +49,11 @@ export default class Start extends Command {
     if (flags.socket) {
       dargs.push('--socket=' + flags.socket)
     }
+    if (args.project) {
+      dargs.push(args.project)
+    } else {
+      dargs.push('.')
+    }
 
     if (this.config.debug) {
       this.log(`Using ` + process.argv[0] + ` (` + dargs + `) as the server`)
