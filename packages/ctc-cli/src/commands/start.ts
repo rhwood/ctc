@@ -33,14 +33,13 @@ export default class Start extends Command {
 
   async run() {
     const {args, flags} = this.parse(Start)
-    const daemon = (flags.daemon != false)
 
     if (flags.force) {
       this.warn('Forcing unsafe start...')
     }
 
     var dargs: string[] = [process.argv[1], 'server']
-    if (daemon) {
+    if (flags.daemon) {
       dargs.push('--daemon')
     }
     if (flags.port) {
@@ -61,7 +60,7 @@ export default class Start extends Command {
 
     const server = spawn(process.argv[0], dargs, {
       detached: true,
-      stdio: (daemon) ? 'ignore' : 'inherit',
+      stdio: (flags.daemon) ? 'ignore' : 'inherit',
     })
 
     server.pid
