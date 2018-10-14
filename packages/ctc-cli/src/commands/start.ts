@@ -36,7 +36,7 @@ export default class Start extends Command {
     const daemon = (flags.daemon != false)
 
     if (flags.force) {
-      this.log(`⚠️  Forcing unsafe start...`)
+      this.warn('Forcing unsafe start...')
     }
 
     var dargs: string[] = [process.argv[1], 'server']
@@ -51,7 +51,7 @@ export default class Start extends Command {
     }
 
     if (this.config.debug) {
-      this.log(`Using ` + process.argv[0] + `(` + dargs + `) as the server`)
+      this.log(`Using ` + process.argv[0] + ` (` + dargs + `) as the server`)
     }
 
     const server = spawn(process.argv[0], dargs, {

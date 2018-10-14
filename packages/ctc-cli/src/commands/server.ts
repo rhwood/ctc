@@ -1,7 +1,7 @@
 import {Command, flags} from '@oclif/command'
 
 export default class Server extends Command {
-  static description = 'describe the command here'
+  static description = 'Control a CTC server'
 
   // do not list server in help contents
   static hidden = true
@@ -20,7 +20,7 @@ export default class Server extends Command {
     const {args, flags} = this.parse(Server)
 
     if (this.config.debug) {
-      this.log(`🚦 Starting server...`)
+      this.log('Starting server...')
     }
   }
 }
