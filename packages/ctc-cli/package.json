@@ -10,7 +10,9 @@
   "dependencies": {
     "@oclif/command": "^1.4.36",
     "@oclif/config": "^1.6.33",
+    "@oclif/plugin-autocomplete": "^0.1.0",
     "@oclif/plugin-help": "^2.0.5",
+    "@oclif/plugin-not-found": "^1.2.2",
     "tslib": "^1.9.3"
   },
   "devDependencies": {
@@ -47,7 +49,9 @@
     "commands": "./lib/commands",
     "bin": "ctc",
     "plugins": [
-      "@oclif/plugin-help"
+      "@oclif/plugin-autocomplete",
+      "@oclif/plugin-help",
+      "@oclif/plugin-not-found"
     ]
   },
   "repository": "rhwood/ctc-cli",
