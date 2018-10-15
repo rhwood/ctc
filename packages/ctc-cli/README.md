@@ -33,6 +33,7 @@ USAGE
 <!-- commands -->
 * [`ctc autocomplete [SHELL]`](#ctc-autocomplete-shell)
 * [`ctc help [COMMAND]`](#ctc-help-command)
+* [`ctc init PROJECT`](#ctc-init-project)
 * [`ctc start [PROJECT]`](#ctc-start-project)
 
 ## `ctc autocomplete [SHELL]`
@@ -73,7 +74,27 @@ OPTIONS
   --all  see all commands in CLI
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.0.5/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.3/src/commands/help.ts)_
+
+## `ctc init PROJECT`
+
+Create a CTC server project
+
+```
+USAGE
+  $ ctc init PROJECT
+
+OPTIONS
+  -p, --port=port      use networkable port for server control
+  -s, --socket=socket  use local socket for server control
+  -u, --overwrite      overwrite existing project if one exists
+
+EXAMPLE
+  $ ctc init myProject
+       Create a CTC server project in the directory 'myProject'.
+```
+
+_See code: [src/commands/init.ts](https://github.com/rhwood/ctc-cli/blob/v0.0.0/src/commands/init.ts)_
 
 ## `ctc start [PROJECT]`
 
@@ -84,7 +105,7 @@ USAGE
   $ ctc start [PROJECT]
 
 OPTIONS
-  -d, --daemon         start as a server
+  -d, --[no-]daemon    start as a server
   -f, --force          force CTC server to start
   -h, --help           show CLI help
   -p, --port=port      use networkable port for server control
