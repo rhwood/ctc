@@ -59,7 +59,7 @@ export default class Start extends Command {
     }
 
     const server = spawn(process.argv[0], dargs, {
-      detached: true,
+      detached: (flags.daemon),
       stdio: (flags.daemon) ? 'ignore' : 'inherit',
     })
 
