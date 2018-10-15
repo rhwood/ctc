@@ -45,9 +45,9 @@ export default class Init extends Command {
     if (!args.project) {
       this.error('Project directory not specified.')
     }
-    if (args.port) {
-      if (isNaN(Number(args.port))) {
-        this.error(`Port "${args.port}" is not a networkable port.`)
+    if (flags.port) {
+      if (isNaN(Number(flags.port))) {
+        this.error(`Port "${flags.port}" is not a networkable port.`)
       }
     }
 
@@ -63,16 +63,8 @@ export default class Init extends Command {
     }
 
     let name = await cli.prompt("Project name")
-    let port = (flags.port) ? Number(flags.port) : 0
+    let port = (flags.port) ? Number(flags.port) : 4242
     let socket = (flags.socket) ? flags.socket : ''
-    if (!flags.port && !flags.socket) {
-      let local = await cli.confirm(`Should "${name}" be controlable only on this computer?`)
-      if (!local) {
-        port = await cli.prompt("Control port [1-49151]")
-      } else {
-        socket = await cli.prompt("Path to control socket")
-      }
-    }
     let project: Project = {name: name, control: {port: port, socket: socket}, ctc: {version: this.config.version}}
 
     let properties: string = Path.join(args.project, 'project.json')
