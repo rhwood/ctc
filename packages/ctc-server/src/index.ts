@@ -1,3 +1,2 @@
-import {CtcServer} from './CtcServer'
-
-export default CtcServer
+export {CtcServer as Server} from './CtcServer'
+export {CtcProject as Project} from './CtcProject'

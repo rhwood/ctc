@@ -3,6 +3,7 @@ import * as fs from 'fs-extra'
 import * as Path from 'path'
 import cli from 'cli-ux'
 import Init from './init'
+import {Server as CtcServer, Project} from 'ctc-server'
 
 export default class Server extends Command {
   static description = 'Control a CTC server'
@@ -48,5 +49,10 @@ export default class Server extends Command {
         this.error(`${args.project} is not a project.`)
       }
     }
+
+    let project: Project = fs.readJsonSync(Path.join(args.project, 'project.json'))
+
+    let server = new CtcServer(project)
+    server.start()
   }
 }

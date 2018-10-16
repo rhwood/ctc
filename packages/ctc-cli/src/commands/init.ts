@@ -1,18 +1,8 @@
 import {Command, flags} from '@oclif/command'
 import * as fs from 'fs-extra'
 import * as Path from 'path'
-import { cli } from 'cli-ux'
-
-interface Project {
-  name: string
-  control: {
-    port: number
-    socket: string
-  }
-  ctc: {
-    version: string
-  }
-}
+import {cli} from 'cli-ux'
+import {Project} from 'ctc-server'
 
 export default class Init extends Command {
   static description = 'Create a CTC server project'
@@ -65,7 +55,13 @@ export default class Init extends Command {
     let name = await cli.prompt("Project name")
     let port = (flags.port) ? Number(flags.port) : 4242
     let socket = (flags.socket) ? flags.socket : ''
-    let project: Project = {name: name, control: {port: port, socket: socket}, ctc: {version: this.config.version}}
+    let hostname = '127.0.0.1'
+    let project: Project = {
+      name: name,
+      control: {hostname: hostname, port: port, socket: socket},
+      http: {hostname: hostname, port: 0, secure: false},
+      ctc: {version: this.config.version}
+    }
 
     let properties: string = Path.join(args.project, 'project.json')
 
