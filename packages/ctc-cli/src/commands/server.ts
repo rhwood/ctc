@@ -6,10 +6,10 @@ import Init from './init'
 import {Server as CtcServer, Project} from 'ctc-server'
 
 export default class Server extends Command {
-  static description = 'Control a CTC server'
+  static description = 'Run a CTC server'
 
   // do not list server in help contents
-  static hidden = true
+  static hidden = false
 
   static flags = {
     help: flags.help({char: 'h'}),
@@ -19,7 +19,7 @@ export default class Server extends Command {
     socket: flags.string({char: 's', description: 'use socket for local control'})
   }
 
-  static args = [{name: 'project'}]
+  static args = [{name: 'project', default: Path.resolve()}]
 
   private isProject(project: string): boolean {
     let properties: string = Path.join(project, 'project.json')
@@ -30,7 +30,7 @@ export default class Server extends Command {
     const {args, flags} = this.parse(Server)
 
     if (!args.project) {
-      this.error('Project not specified')
+      this.error('Project directory not specified or is invalid.')
     }
 
     if (this.config.debug) {

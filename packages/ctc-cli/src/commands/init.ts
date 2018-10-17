@@ -27,13 +27,13 @@ export default class Init extends Command {
     }),
   }
 
-  static args = [{name: 'project', descripton: 'project directory', required: true}]
+  static args = [{name: 'project', descripton: 'project directory', required: true, default: Path.resolve()}]
 
   async run() {
     const {args, flags} = this.parse(Init)
 
     if (!args.project) {
-      this.error('Project directory not specified.')
+      this.error('Project directory not specified or is invalid.')
     }
     if (flags.port) {
       if (isNaN(Number(flags.port))) {

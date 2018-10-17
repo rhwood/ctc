@@ -1,15 +1,19 @@
 import {Command, flags} from '@oclif/command'
 import {spawn} from 'child_process'
+import * as path from 'path'
+import { cli } from 'cli-ux';
 
 export default class Start extends Command {
-  static description = 'Start a CTC server'
+  static description = 'Start a CTC server as a separate process'
 
   static examples = [
     `$ ctc start
     Start a ctc server as a separate process and exit.
     `,
     `$ ctc start --no-daemon
-    Start a ctc server that runs until this command exits.
+    Start a ctc server that runs until this command exits. This is
+    equivalent to the command:
+    $ ctc server
     `,
   ]
 
@@ -29,7 +33,7 @@ export default class Start extends Command {
     }),
   }
 
-  static args = [{name: 'project', descripton: 'use project'}]
+  static args = [{name: 'project', descripton: 'use project', default: path.resolve()}]
 
   async run() {
     const {args, flags} = this.parse(Start)
@@ -39,9 +43,7 @@ export default class Start extends Command {
     }
 
     var dargs: string[] = [process.argv[1], 'server']
-    if (flags.daemon) {
-      dargs.push('--daemon')
-    }
+    dargs.push((flags.daemon ? '--daemon' : '--no-daemon'))
     if (flags.port) {
       dargs.push('--port=' + flags.port)
     }
@@ -51,7 +53,7 @@ export default class Start extends Command {
     if (args.project) {
       dargs.push(args.project)
     } else {
-      dargs.push('.')
+      cli.error('Project directory not specified or is invalid.')
     }
 
     if (this.config.debug) {
