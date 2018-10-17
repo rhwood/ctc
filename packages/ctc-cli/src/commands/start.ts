@@ -18,7 +18,7 @@ export default class Start extends Command {
   ]
 
   static flags = {
-    daemon: flags.boolean({char: 'd', allowNo: true, description: 'start as a server'}),
+    daemon: flags.boolean({char: 'd', allowNo: true, description: 'start as a server', default: true}),
     force: flags.boolean({char: 'f', description: 'force CTC server to start'}),
     help: flags.help({char: 'h'}),
     port: flags.string({
@@ -51,7 +51,7 @@ export default class Start extends Command {
       dargs.push('--socket=' + flags.socket)
     }
     if (args.project) {
-      dargs.push(args.project)
+      dargs.push(path.resolve(args.project))
     } else {
       cli.error('Project directory not specified or is invalid.')
     }
