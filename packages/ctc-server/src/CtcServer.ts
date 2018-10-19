@@ -15,18 +15,19 @@ export class CtcServer {
 
   constructor(project: CtcProject) {
     this.project = project
-    if (this.project.control.port) {
-      ipc.serveNet(this.project.control.hostname, this.project.control.port, this.ipcServerCallback)
+    if (this.project.config.control.port) {
+      ipc.serveNet(this.project.config.control.hostname, this.project.config.control.port, this.ipcServerCallback)
     } else {
-      ipc.serve(this.project.control.socket, this.ipcServerCallback)
+      ipc.serve(this.project.config.control.socket, this.ipcServerCallback)
     }
     this.ipcServer = ipc.server
   }
 
   start() {
-    if (this.project.http.port) {
-      this.httpServer.listen(this.project.http.port, this.project.http.hostname, () => {
-        let url = `http://${this.project.http.hostname}:${this.project.http.port}/`
+    this.project.lock()
+    if (this.project.config.http.port) {
+      this.httpServer.listen(this.project.config.http.port, this.project.config.http.hostname, () => {
+        let url = `http://${this.project.config.http.hostname}:${this.project.config.http.port}/`
         cli.info('HTTP server running at:')
         cli.url(url, url)
       })
@@ -42,6 +43,7 @@ export class CtcServer {
     cli.debug('Stopping server...')
     this.httpServer.close()
     this.ipcServer.stop()
+    this.project.unlock()
   }
 
   ipcServerCallback() {

@@ -2,7 +2,7 @@ import {Command, flags} from '@oclif/command'
 import * as fs from 'fs-extra'
 import * as Path from 'path'
 import {cli} from 'cli-ux'
-import {Project} from 'ctc-server'
+import {ProjectConfig} from 'ctc-server'
 
 export default class Init extends Command {
   static description = 'Create a CTC server project'
@@ -56,7 +56,7 @@ export default class Init extends Command {
     let port = (flags.port) ? Number(flags.port) : 4242
     let socket = (flags.socket) ? flags.socket : ''
     let hostname = '127.0.0.1'
-    let project: Project = {
+    let config: ProjectConfig = {
       name: name,
       control: {hostname: hostname, port: port, socket: socket},
       http: {hostname: hostname, port: 0, secure: false},
@@ -65,6 +65,6 @@ export default class Init extends Command {
 
     let properties: string = Path.join(args.project, 'project.json')
 
-    fs.writeJson(properties, project, {spaces: 2})
+    fs.writeJson(properties, config, {spaces: 2})
   }
 }
