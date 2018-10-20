@@ -1,11 +1,13 @@
 import http = require('http')
 import {CtcProject} from './CtcProject';
+import {IConfig} from '@oclif/config'
 import {cli} from 'cli-ux'
 let ipc = new (require('node-ipc')).IPC()
 
 export class CtcServer {
 
   readonly project: CtcProject
+  readonly config: IConfig
   readonly httpServer = http.createServer((request, response) => {
     response.statusCode = 200;
     response.setHeader('Content-Type', 'text/plain');
@@ -13,8 +15,9 @@ export class CtcServer {
   })
   readonly ipcServer: any
 
-  constructor(project: CtcProject) {
+  constructor(project: CtcProject, config: IConfig) {
     this.project = project
+    this.config = config
     if (this.project.config.control.port) {
       ipc.serveNet(this.project.config.control.hostname, this.project.config.control.port, this.ipcServerCallback)
     } else {

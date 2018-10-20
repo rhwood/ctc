@@ -3,7 +3,7 @@ import * as fs from 'fs-extra'
 import * as Path from 'path'
 import cli from 'cli-ux'
 import Init from './init'
-import {Server as CtcServer, Project, ProjectConfig} from 'ctc-server'
+import {Server as CtcServer, Project} from 'ctc-server'
 
 export default class Server extends Command {
   static description = 'Run a CTC server'
@@ -47,7 +47,7 @@ export default class Server extends Command {
 
     let project: Project = new Project(args.project, fs.readJsonSync(Path.join(args.project, 'project.json')))
 
-    let server = new CtcServer(project)
+    let server = new CtcServer(project, this.config)
     server.start()
   }
 }
