@@ -2,6 +2,8 @@ import http = require('http')
 import {CtcProject} from './CtcProject';
 import {IConfig} from '@oclif/config'
 import {cli} from 'cli-ux'
+import * as Path from 'path'
+import * as fs from 'fs-extra'
 let ipc = new (require('node-ipc')).IPC()
 
 export class CtcServer {
@@ -57,4 +59,29 @@ export class CtcServer {
     )
   }
  
+  cacheMetaData(remove: boolean | undefined) {
+    let cache = Path.join(this.config.cacheDir, 'server.json')
+    let contents: Array<any> = []
+    if (fs.existsSync(cache)) {
+      contents = fs.readJsonSync(cache)
+      if (remove) {
+        contents = contents.filter((value) => {value.pid != process.pid})
+        if (!contents.length) {
+          fs.remove(cache)
+        } else {
+          fs.writeJsonSync(cache, contents)
+        }
+        return // short circut after removing existing entry
+      }
+    }
+    if (!remove) {
+      let pid = {
+        pid: process.pid,
+        project: this.project.path,
+        control: {hostname: '', port: '', socket: ''}
+      }
+      contents[contents.length] = pid
+      fs.writeJsonSync(cache, contents)
+    }
+  }
 }
