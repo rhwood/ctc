@@ -27,4 +27,4 @@ CTC is not yet published on npm, so see _Develop_ below to install CTC.
 
 ## Notes
 
-This code is CI checked against (tslint)[https://palantir.github.io/tslint/] rules (currently the [@oclif/tslint](https://github.com/oclif/tslint/blob/master/tslint.json) rules), so using a tslint plugin in your editor is recommended.
+This code is CI checked against [tslint](https://palantir.github.io/tslint/) rules (currently the [@oclif/tslint](https://github.com/oclif/tslint/blob/master/tslint.json) rules), so using a tslint plugin in your editor is recommended.
