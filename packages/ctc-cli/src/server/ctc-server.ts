@@ -1,19 +1,21 @@
-import http = require('http')
-import {CtcProject} from '../project/ctc-project';
 import {IConfig} from '@oclif/config'
 import {cli} from 'cli-ux'
-import * as Path from 'path'
 import * as fs from 'fs-extra'
+import http = require('http')
+import * as Path from 'path'
+
 let ipc = new (require('node-ipc')).IPC()
 
-export class CtcServer {
+import {CtcProject} from '../project/ctc-project'
 
+export class CtcServer {
   readonly project: CtcProject
   readonly config: IConfig
+  // tslint:disable-next-line:no-unused // remove when request is used
   readonly httpServer = http.createServer((request, response) => {
-    response.statusCode = 200;
-    response.setHeader('Content-Type', 'text/plain');
-    response.end('Hello World\n');
+    response.statusCode = 200
+    response.setHeader('Content-Type', 'text/plain')
+    response.end('Hello World\n')
   })
   readonly ipcServer: any
 
@@ -32,6 +34,7 @@ export class CtcServer {
     this.project.lock()
     if (this.project.config.http.port) {
       this.httpServer.listen(this.project.config.http.port, this.project.config.http.hostname, () => {
+        // tslint:disable-next-line:no-http-string
         let url = `http://${this.project.config.http.hostname}:${this.project.config.http.port}/`
         cli.info('HTTP server running at:')
         cli.url(url, url)
@@ -53,21 +56,23 @@ export class CtcServer {
 
   ipcServerCallback() {
     ipc.server.on(
-      'stop', function(data: any, socket: any) {
+      'stop', function () { // can take parameters (data: any, socket: any)
         stop()
       }
     )
   }
- 
+
   cacheMetaData(remove: boolean | undefined) {
     let cache = Path.join(this.config.cacheDir, 'server.json')
     let contents: Array<any> = []
     if (fs.existsSync(cache)) {
       contents = fs.readJsonSync(cache)
       if (remove) {
-        contents = contents.filter((value) => {value.pid != process.pid})
+        contents = contents.filter(value => { value.pid !== process.pid })
         if (!contents.length) {
-          fs.remove(cache)
+          // todo: log error
+          // tslint:disable-next-line:no-unused
+          fs.remove(cache).catch(err => {})
         } else {
           fs.writeJsonSync(cache, contents)
         }

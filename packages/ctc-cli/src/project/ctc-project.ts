@@ -1,12 +1,9 @@
-import {CtcProjectConfig} from './ctc-project-config'
 import * as fs from 'fs-extra'
 import * as Path from 'path'
 
+import {CtcProjectConfig} from './ctc-project-config'
+
 export class CtcProject {
-
-  readonly config: CtcProjectConfig
-  readonly path: string
-
   static isProject(dir: string): boolean {
     return fs.existsSync(Path.join(dir, 'project.json'))
   }
@@ -27,9 +24,12 @@ export class CtcProject {
     return false
   }
 
+  readonly config: CtcProjectConfig
+  readonly path: string
+
   constructor(path: string, config: CtcProjectConfig | undefined) {
     this.path = Path.resolve(path)
-    if (typeof config === 'undefined') {
+    if (config === undefined) {
       let json = Path.join(this.path, 'project.json')
       if (fs.existsSync(json)) {
         this.config = fs.readJsonSync(json)
@@ -43,11 +43,15 @@ export class CtcProject {
 
   public lock() {
     let lock: string = Path.join(this.path, 'lock')
-    fs.writeFile(lock, process.pid)
+    // TODO: log error
+    //tslint:disable-next-line:no-unused
+    fs.writeFile(lock, process.pid).catch(err => {})
   }
 
   public unlock() {
     let lock: string = Path.join(this.path, 'lock')
-    fs.remove(lock)
+    // TODO: log error
+    //tslint:disable-next-line:no-unused
+    fs.remove(lock).catch(err => {})
   }
 }

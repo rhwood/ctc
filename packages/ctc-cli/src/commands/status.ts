@@ -1,7 +1,8 @@
 import {Command, flags} from '@oclif/command'
 import {spawn} from 'child_process'
+import {cli} from 'cli-ux'
 import * as path from 'path'
-import { cli } from 'cli-ux'
+
 import {CtcProject} from '../project/ctc-project'
 
 export default class Status extends Command {
@@ -64,14 +65,13 @@ export default class Status extends Command {
     }
 
     if (this.config.debug) {
-      this.log(`Using ` + process.argv[0] + ` (` + dargs + `) as the server`)
+      this.log(`Using ${process.argv[0]} (${dargs}) as the server`)
     }
 
     const server = spawn(process.argv[0], dargs, {
       detached: (flags.daemon),
       stdio: (flags.daemon) ? 'ignore' : 'inherit',
     })
-
 
     if (flags.daemon) {
       server.unref()

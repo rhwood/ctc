@@ -1,7 +1,8 @@
 import {Command, flags} from '@oclif/command'
+import {cli} from 'cli-ux'
 import * as fs from 'fs-extra'
 import * as Path from 'path'
-import {cli} from 'cli-ux'
+
 import {CtcProjectConfig} from '../project/ctc-project-config'
 
 export default class Init extends Command {
@@ -52,19 +53,21 @@ export default class Init extends Command {
       fs.mkdirsSync(args.project)
     }
 
-    let name = await cli.prompt("Project name")
+    let name = await cli.prompt('Project name')
     let port = (flags.port) ? Number(flags.port) : 4242
     let socket = (flags.socket) ? flags.socket : ''
     let hostname = '127.0.0.1'
     let config: CtcProjectConfig = {
-      name: name,
-      control: {hostname: hostname, port: port, socket: socket},
-      http: {hostname: hostname, port: 0, secure: false},
+      name,
+      control: {hostname, port, socket},
+      http: {hostname, port: 0, secure: false},
       ctc: {version: this.config.version}
     }
 
     let properties: string = Path.join(args.project, 'project.json')
 
-    fs.writeJson(properties, config, {spaces: 2})
+    // todo: log error
+    // tslint:disable-next-line:no-unused
+    fs.writeJson(properties, config, {spaces: 2}).catch(err => {})
   }
 }
