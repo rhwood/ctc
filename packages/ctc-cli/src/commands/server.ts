@@ -3,7 +3,8 @@ import * as fs from 'fs-extra'
 import * as Path from 'path'
 import cli from 'cli-ux'
 import Init from './init'
-import {Server as CtcServer, Project} from 'ctc-server'
+import {CtcServer} from '../server/CtcServer'
+import {CtcProject} from '../project/CtcProject'
 
 export default class Server extends Command {
   static description = 'Run a CTC server'
@@ -32,7 +33,7 @@ export default class Server extends Command {
       this.log('Preparing server...')
     }
 
-    if (!Project.isProject(args.project)) {
+    if (!CtcProject.isProject(args.project)) {
       if (!args.daemon) {
         this.log(`${args.project} is not a project.`)
         if (await cli.confirm('Initialize a project?')) {
@@ -45,7 +46,7 @@ export default class Server extends Command {
       }
     }
 
-    let project: Project = new Project(args.project, fs.readJsonSync(Path.join(args.project, 'project.json')))
+    let project: CtcProject = new CtcProject(args.project, fs.readJsonSync(Path.join(args.project, 'project.json')))
 
     let server = new CtcServer(project, this.config)
     server.start()

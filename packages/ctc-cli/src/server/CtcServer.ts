@@ -1,5 +1,5 @@
 import http = require('http')
-import {CtcProject} from './CtcProject';
+import {CtcProject} from '../project/CtcProject';
 import {IConfig} from '@oclif/config'
 import {cli} from 'cli-ux'
 import * as Path from 'path'

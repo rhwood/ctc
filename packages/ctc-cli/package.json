@@ -1,12 +1,12 @@
 {
-  "name": "ctc-cli",
-  "description": "Control a Centralized Traffic Controller (CTC) Server from the command line",
+  "name": "ctc",
+  "description": "Centralized Traffic Control for Model Railroads",
   "version": "0.0.0",
   "author": "Randall Wood @rhwood",
   "bin": {
     "ctc": "./bin/run"
   },
-  "bugs": "https://github.com/rhwood/ctc-cli/issues",
+  "bugs": "https://github.com/rhwood/ctc/issues",
   "dependencies": {
     "@oclif/command": "^1.5.4",
     "@oclif/config": "^1.8.8",
@@ -14,9 +14,12 @@
     "@oclif/plugin-autocomplete": "^0.1.0",
     "@oclif/plugin-help": "^2.1.3",
     "@oclif/plugin-not-found": "^1.2.2",
-    "cli-ux": "^4.9.1",
-    "tslib": "^1.9.3",
-    "ctc-server": "^0.0.0"
+    "@types/fs-extra": "^5.0.4",
+    "@types/node-ipc": "^9.1.1",
+    "cli-ux": "^5.1.0",
+    "fs-extra": "^7.0.1",
+    "node-ipc": "^9.1.1",
+    "tslib": "^1.9.3"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.19.2",
@@ -26,10 +29,10 @@
     "@types/mocha": "^5.2.5",
     "@types/node": "^10.12.0",
     "chai": "^4.2.0",
-    "globby": "^8.0.1",
+    "globby": "^9.0.0",
     "mocha": "^5.2.0",
     "nyc": "^13.1.0",
-    "ts-node": "^7.0.0",
+    "ts-node": "^8.0.2",
     "tslint": "^5.11.0",
     "typescript": "^3.1.3"
   },
@@ -39,10 +42,9 @@
   "files": [
     "/bin",
     "/lib",
-    "/npm-shrinkwrap.json",
     "/oclif.manifest.json"
   ],
-  "homepage": "https://github.com/rhwood/ctc-cli",
+  "homepage": "https://github.com/rhwood/ctc",
   "keywords": [
     "oclif"
   ],
@@ -57,7 +59,7 @@
       "@oclif/plugin-not-found"
     ]
   },
-  "repository": "rhwood/ctc-cli",
+  "repository": "rhwood/ctc",
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "tsc -p test --noEmit && tslint -p test -t stylish",

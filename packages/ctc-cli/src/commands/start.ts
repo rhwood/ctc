@@ -2,7 +2,7 @@ import {Command, flags} from '@oclif/command'
 import {spawn} from 'child_process'
 import * as path from 'path'
 import { cli } from 'cli-ux'
-import {Project} from 'ctc-server'
+import {CtcProject} from '../project/CtcProject'
 
 export default class Start extends Command {
   static description = 'Start a CTC server as a separate process'
@@ -58,7 +58,7 @@ export default class Start extends Command {
       cli.error('Project directory not specified or is invalid.')
     }
 
-    if (Project.isLocked(dir)) {
+    if (CtcProject.isLocked(dir)) {
       cli.error('Project is in use by another application.')
     }
 
