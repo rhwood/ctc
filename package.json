@@ -8,6 +8,7 @@
     "lerna": "^3.11.0"
   },
   "scripts": {
-    "test": "lerna run test"
+    "test": "lerna run test",
+    "postinstall": "lerna bootstrap"
   }
 }
