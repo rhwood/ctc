@@ -1,4 +1,4 @@
-import {CtcProjectConfig} from './CtcProjectConfig'
+import {CtcProjectConfig} from './ctc-project-config'
 import * as fs from 'fs-extra'
 import * as Path from 'path'
 

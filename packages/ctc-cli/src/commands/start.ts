@@ -2,7 +2,7 @@ import {Command, flags} from '@oclif/command'
 import {spawn} from 'child_process'
 import * as path from 'path'
 import { cli } from 'cli-ux'
-import {CtcProject} from '../project/CtcProject'
+import {CtcProject} from '../project/ctc-project'
 
 export default class Start extends Command {
   static description = 'Start a CTC server as a separate process'

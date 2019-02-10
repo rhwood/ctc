@@ -2,7 +2,7 @@ import {Command, flags} from '@oclif/command'
 import * as fs from 'fs-extra'
 import * as Path from 'path'
 import {cli} from 'cli-ux'
-import {CtcProjectConfig} from '../project/CtcProjectConfig'
+import {CtcProjectConfig} from '../project/ctc-project-config'
 
 export default class Init extends Command {
   static description = 'Create a CTC server project'

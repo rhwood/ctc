@@ -3,8 +3,8 @@ import * as fs from 'fs-extra'
 import * as Path from 'path'
 import cli from 'cli-ux'
 import Init from './init'
-import {CtcServer} from '../server/CtcServer'
-import {CtcProject} from '../project/CtcProject'
+import {CtcServer} from '../server/ctc-server'
+import {CtcProject} from '../project/ctc-project'
 
 export default class Server extends Command {
   static description = 'Run a CTC server'
