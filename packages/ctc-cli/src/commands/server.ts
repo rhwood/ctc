@@ -1,10 +1,12 @@
 import {Command, flags} from '@oclif/command'
+import cli from 'cli-ux'
 import * as fs from 'fs-extra'
 import * as Path from 'path'
-import cli from 'cli-ux'
-import Init from './init'
-import {CtcServer} from '../server/ctc-server'
+
 import {CtcProject} from '../project/ctc-project'
+import {CtcServer} from '../server/ctc-server'
+
+import Init from './init'
 
 export default class Server extends Command {
   static description = 'Run a CTC server'
@@ -24,6 +26,10 @@ export default class Server extends Command {
 
   async run() {
     const {args, flags} = this.parse(Server)
+
+    if (flags.daemon) {
+      this.log('Should be daemon...')
+    }
 
     if (!args.project) {
       this.error('Project directory not specified or is invalid.')
