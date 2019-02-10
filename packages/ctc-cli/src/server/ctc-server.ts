@@ -2,6 +2,7 @@ import {IConfig} from '@oclif/config'
 import {cli} from 'cli-ux'
 import * as fs from 'fs-extra'
 import http = require('http')
+import * as log from 'npmlog'
 import * as Path from 'path'
 
 let ipc = new (require('node-ipc')).IPC()
@@ -70,9 +71,9 @@ export class CtcServer {
       if (remove) {
         contents = contents.filter(value => { value.pid !== process.pid })
         if (!contents.length) {
-          // todo: log error
-          // tslint:disable-next-line:no-unused
-          fs.remove(cache).catch(err => {})
+          fs.remove(cache).catch(err => {
+            log.error('ERROR', '%s', err)
+          })
         } else {
           fs.writeJsonSync(cache, contents)
         }

@@ -1,4 +1,5 @@
 import * as fs from 'fs-extra'
+import * as log from 'npmlog'
 import * as Path from 'path'
 
 import {CtcProjectConfig} from './ctc-project-config'
@@ -43,15 +44,15 @@ export class CtcProject {
 
   public lock() {
     let lock: string = Path.join(this.path, 'lock')
-    // TODO: log error
-    //tslint:disable-next-line:no-unused
-    fs.writeFile(lock, process.pid).catch(err => {})
+    fs.writeFile(lock, process.pid).catch(err => {
+      log.error('ERROR', 'Unable to lock project: %s', err)
+    })
   }
 
   public unlock() {
     let lock: string = Path.join(this.path, 'lock')
-    // TODO: log error
-    //tslint:disable-next-line:no-unused
-    fs.remove(lock).catch(err => {})
+    fs.remove(lock).catch(err => {
+      log.error('ERROR', 'Unable to lock project: %s', err)
+    })
   }
 }

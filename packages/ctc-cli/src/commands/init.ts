@@ -1,6 +1,7 @@
 import {Command, flags} from '@oclif/command'
 import {cli} from 'cli-ux'
 import * as fs from 'fs-extra'
+import * as log from 'npmlog'
 import * as Path from 'path'
 
 import {CtcProjectConfig} from '../project/ctc-project-config'
@@ -66,8 +67,8 @@ export default class Init extends Command {
 
     let properties: string = Path.join(args.project, 'project.json')
 
-    // todo: log error
-    // tslint:disable-next-line:no-unused
-    fs.writeJson(properties, config, {spaces: 2}).catch(err => {})
+    fs.writeJson(properties, config, {spaces: 2}).catch(err => {
+      log.error('ERROR', 'Unable to write %s: %s', properties, err)
+    })
   }
 }
