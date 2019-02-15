@@ -27,10 +27,6 @@ export default class Server extends Command {
   async run() {
     const {args, flags} = this.parse(Server)
 
-    if (flags.daemon) {
-      this.log('Should be daemon...')
-    }
-
     if (!args.project) {
       this.error('Project directory not specified or is invalid.')
     }
@@ -40,7 +36,7 @@ export default class Server extends Command {
     }
 
     if (!CtcProject.isProject(args.project)) {
-      if (!args.daemon) {
+      if (flags.daemon) {
         this.log(`${args.project} is not a project.`)
         if (await cli.confirm('Initialize a project?')) {
           await Init.run([args.project])
