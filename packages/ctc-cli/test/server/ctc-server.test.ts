@@ -7,7 +7,7 @@ import {CtcProject} from '../../src/project/ctc-project'
 import {CtcProjectConfig} from '../../src/project/ctc-project-config'
 import {CtcServer} from '../../src/server/ctc-server'
 
-describe('cachePID', () => {
+describe('server pid cache', () => {
   let projectConfig: CtcProjectConfig = {
     name: 'Test Project',
     control: {hostname: 'localhost', port: 0, socket: ''},
