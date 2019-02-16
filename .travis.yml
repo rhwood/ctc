@@ -13,5 +13,5 @@ script:
   - npm run ci-coverage
 after_script:
   - ./cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.ctc-cli.json packages/ctc-cli/coverage/lcov.info  # Format ctc-cli coverage
-  - ./cc-test-reporter sum-coverage coverage/codeclimate.*.json -p 2                  # Sum both coverage parts into coverage/codeclimate.json
+  - ./cc-test-reporter sum-coverage coverage/codeclimate.*.json -p 1                  # Sum both coverage parts into coverage/codeclimate.json
   - if [[ "$TRAVIS_TEST_RESULT" == 0 ]]; then ./cc-test-reporter upload-coverage; fi  # Upload coverage/codeclimate.json
