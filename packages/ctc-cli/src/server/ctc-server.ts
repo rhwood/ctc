@@ -66,20 +66,14 @@ export class CtcServer {
   cacheMetaData(remove: boolean | undefined) {
     let cache = Path.join(this.config.cacheDir, 'server.json')
     let contents: Array<any> = []
-    if (fs.existsSync(cache)) {
-      contents = fs.readJsonSync(cache)
-      if (remove) {
-        contents = contents.filter(value => { value.pid !== process.pid })
-        if (!contents.length) {
-          fs.remove(cache).catch(err => {
-            log.error('ERROR', '%s', err)
-          })
-        } else {
-          fs.writeJsonSync(cache, contents)
-        }
-        return // short circut after removing existing entry
+    try {
+      if (fs.existsSync(cache)) {
+        contents = fs.readJsonSync(cache)
       }
+    } catch (err) {
+      log.error('ERROR reading metadata cache', '%s', err)
     }
+    contents = contents.filter(value => { value.pid !== process.pid })
     if (!remove) {
       let pid = {
         pid: process.pid,
@@ -87,7 +81,15 @@ export class CtcServer {
         control: {hostname: '', port: '', socket: ''}
       }
       contents[contents.length] = pid
-      fs.writeJsonSync(cache, contents)
+    }
+    try {
+      if (!contents.length) {
+        fs.removeSync(cache)
+      } else {
+        fs.writeJsonSync(cache, contents)
+      }
+    } catch (err) {
+      log.error('ERROR writing metadata cache', '%s', err)
     }
   }
 }
