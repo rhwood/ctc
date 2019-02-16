@@ -69,6 +69,7 @@
     "prepare": "rm -rf lib && tsc",
     "test": "nyc mocha --forbid-only \"test/**/*.test.ts\"",
     "report": "npm test && nyc report --reporter html",
+    "ci-coverage": "npm test && nyc report --reporter lcov",
     "version": "oclif-dev readme && git add README.md"
   },
   "types": "lib/index.d.ts"
