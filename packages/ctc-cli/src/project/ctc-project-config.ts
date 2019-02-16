@@ -1,10 +1,12 @@
+export interface CtcControlConfig {
+  hostname: string
+  port: number
+  socket: string
+}
+
 export interface CtcProjectConfig {
   name: string
-  control: {
-    hostname: string
-    port: number
-    socket: string
-  }
+  control: CtcControlConfig
   http: {
     hostname: string
     port: number

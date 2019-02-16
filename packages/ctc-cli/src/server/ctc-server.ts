@@ -8,6 +8,13 @@ import * as Path from 'path'
 let ipc = new (require('node-ipc')).IPC()
 
 import {CtcProject} from '../project/ctc-project'
+import {CtcControlConfig} from '../project/ctc-project-config'
+
+interface PID {
+  pid: number,
+  project: string,
+  control: CtcControlConfig
+}
 
 export class CtcServer {
   readonly project: CtcProject
@@ -63,33 +70,22 @@ export class CtcServer {
     )
   }
 
-  cacheMetaData(remove: boolean | undefined) {
-    let cache = Path.join(this.config.cacheDir, 'server.json')
-    let contents: Array<any> = []
-    try {
-      if (fs.existsSync(cache)) {
-        contents = fs.readJsonSync(cache)
-      }
-    } catch (err) {
-      log.error('ERROR reading metadata cache', '%s', err)
-    }
-    contents = contents.filter(value => { value.pid !== process.pid })
-    if (!remove) {
-      let pid = {
-        pid: process.pid,
-        project: this.project.path,
-        control: {hostname: '', port: '', socket: ''}
-      }
-      contents[contents.length] = pid
+  cachePID(remove?: boolean | undefined) {
+    let cache = Path.join(this.config.cacheDir, `pid-${process.pid}.json`)
+    let pid: PID = {
+      pid: process.pid,
+      project: this.project.path,
+      control: this.project.config.control
     }
     try {
-      if (!contents.length) {
+      if (remove) {
         fs.removeSync(cache)
       } else {
-        fs.writeJsonSync(cache, contents)
+        fs.ensureFileSync(cache)
+        fs.writeJsonSync(cache, pid)
       }
     } catch (err) {
-      log.error('ERROR writing metadata cache', '%s', err)
+      log.error('ERROR writing PID', '%s', err)
     }
   }
 }
