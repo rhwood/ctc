@@ -1,9 +1,6 @@
 import {flags} from '@oclif/command'
 import {spawn} from 'child_process'
-import {cli} from 'cli-ux'
 import * as path from 'path'
-
-import {CtcProject} from '../project/ctc-project'
 
 import Server from './server'
 
@@ -15,19 +12,16 @@ export default class Start extends Server {
 
   static examples = [
     `$ ctc start
-    Start a ctc server that runs until this command exits. This is
-    equivalent to the command:
-    $ ctc server --no-daemon
+    Start a ctc server as a background process and exit.
     `,
-    `$ ctc start --dameon
-    Start a ctc server as a separate process and exit. This is
-    equivalent to the command:
-    $ ctc server --daemon &
+    `$ ctc start --no-dameon
+    Start a ctc server that blocks the curren process until
+    it exits.
     `,
   ]
 
   static flags = {
-    daemon: flags.boolean({char: 'd', allowNo: true, description: 'start as a server', default: false}),
+    daemon: flags.boolean({char: 'd', allowNo: true, description: 'start as a server', default: true}),
     help: flags.help({char: 'h'}),
     port: flags.string({
       char: 'p',
@@ -41,20 +35,11 @@ export default class Start extends Server {
     }),
   }
 
-  static args = [{name: 'project', descripton: 'use project', default: path.resolve()}]
+  static args = [{name: 'project', descripton: 'project directory', required: true, default: path.resolve()}]
 
   async run() {
     const {args, flags} = this.parse(Start)
-    let dir = path.resolve(args.project)
-    if (CtcProject.isLocked(dir)) {
-      cli.error('Project is in use by another application.')
-    } else {
-      if (flags.daemon) {
-        this.runDaemon(args, flags)
-      } else {
-        this.runNoDaemon(args, flags)
-      }
-    }
+    this.runCommon(args, flags)
   }
 
   runDaemon(args: any, flags: any) {

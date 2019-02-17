@@ -1,8 +1,7 @@
 import {Command, flags} from '@oclif/command'
 import {cli} from 'cli-ux'
 import * as fs from 'fs-extra'
-import * as log from 'npmlog'
-import * as Path from 'path'
+import * as path from 'path'
 
 import {CtcProjectConfig} from '../project/ctc-project-config'
 
@@ -29,18 +28,13 @@ export default class Init extends Command {
     }),
   }
 
-  static args = [{name: 'project', descripton: 'project directory', required: true, default: Path.resolve()}]
+  static args = [{name: 'project', descripton: 'project directory', required: true, default: path.resolve()}]
 
   async run() {
     const {args, flags} = this.parse(Init)
 
-    if (!args.project) {
-      this.error('Project directory not specified or is invalid.')
-    }
-    if (flags.port) {
-      if (isNaN(Number(flags.port))) {
-        this.error(`Port "${flags.port}" is not a networkable port.`)
-      }
+    if (flags.port && isNaN(Number(flags.port))) {
+      this.error(`Port "${flags.port}" is not a networkable port.`)
     }
 
     if (fs.pathExistsSync(args.project)) {
@@ -48,11 +42,9 @@ export default class Init extends Command {
         this.error('Project directory already exists.')
       } else {
         fs.removeSync(args.project)
-        fs.mkdirsSync(args.project)
       }
-    } else {
-      fs.mkdirsSync(args.project)
     }
+    fs.mkdirsSync(args.project)
 
     let name = await cli.prompt('Project name')
     let port = (flags.port) ? Number(flags.port) : 4242
@@ -65,10 +57,10 @@ export default class Init extends Command {
       ctc: {version: this.config.version}
     }
 
-    let properties: string = Path.join(args.project, 'project.json')
+    let properties: string = path.join(args.project, 'project.json')
 
-    fs.writeJson(properties, config, {spaces: 2}).catch(err => {
-      log.error('ERROR', 'Unable to write %s: %s', properties, err)
+    fs.writeJson(properties, config, {spaces: 2}).catch((error: Error) => {
+      this.error(`Unable to write ${properties}: ${error.message}`)
     })
   }
 }
