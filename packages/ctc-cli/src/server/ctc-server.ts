@@ -49,8 +49,8 @@ export class CtcServer {
     this.ipcStatus = CtcServerStatus.Starting
     if (this.project.config.http.port) {
       this.httpServer.listen(this.project.config.http.port, this.project.config.http.hostname, () => {
-        // tslint:disable-next-line:no-http-string
-        let url = `http://${this.project.config.http.hostname}:${this.project.config.http.port}/`
+        let protocol = this.project.config.http.secure ? 'https' : 'http'
+        let url = `${protocol}://${this.project.config.http.hostname}:${this.project.config.http.port}/`
         cli.info('HTTP server running at:')
         cli.url(url, url)
       })
