@@ -57,7 +57,7 @@ describe('CtcServer.cachePID', () => {
 describe('CtcServer.start and .stop (IPC)', () => {
   let projectConfig: CtcProjectConfig = {
     name: 'Test Project',
-    control: {hostname: 'localhost', port: 0, socket: ''},
+    control: {hostname: 'localhost', port: 4243, socket: ''},
     http: {hostname: 'localhost', port: 4242, secure: false},
     ctc: {version: '0.0.0'}
   }
@@ -82,8 +82,8 @@ describe('CtcServer.start and .stop (IPC)', () => {
       .interval(100)
       .times(20)
       .condition(() => server.ipcStatus === CtcServerStatus.Started)
-      .done(() => {
-        expect(server.ipcStatus).is.equal(CtcServerStatus.Started)
+      .done((result: any) => {
+        expect(result).to.be.true
       })
   })
   ctc.it('stops', ctx => {
@@ -94,8 +94,8 @@ describe('CtcServer.start and .stop (IPC)', () => {
       .interval(100)
       .times(20)
       .condition(() => server.ipcStatus === CtcServerStatus.Stopped)
-      .done(() => {
-        expect(server.ipcStatus).is.equal(CtcServerStatus.Stopped)
+      .done((result: any) => {
+        expect(result).to.be.true
       })
   })
 })
