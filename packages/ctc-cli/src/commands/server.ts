@@ -16,7 +16,6 @@ export default class Server extends Command {
   static flags = {
     help: flags.help({char: 'h'}),
     daemon: flags.boolean({char: 'd', allowNo: true, description: 'run as a daemon'}),
-    force: flags.boolean({char: 'f'}),
     port: flags.string({char: 'p', description: 'use port for remote control'}),
     socket: flags.string({char: 's', description: 'use socket for local control'})
   }
