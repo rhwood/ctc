@@ -21,7 +21,6 @@ export default class Start extends Command {
 
   static flags = {
     daemon: flags.boolean({char: 'd', allowNo: true, description: 'start as a server', default: true}),
-    force: flags.boolean({char: 'f', description: 'force CTC server to start'}),
     help: flags.help({char: 'h'}),
     port: flags.string({
       char: 'p',
@@ -40,10 +39,6 @@ export default class Start extends Command {
   async run() {
     const {args, flags} = this.parse(Start)
 
-    if (flags.force) {
-      this.warn('Forcing unsafe start...')
-    }
-
     let dir = path.resolve(args.project)
     let dargs: string[] = [process.argv[1], 'server']
     dargs.push((flags.daemon ? '--daemon' : '--no-daemon'))
@@ -53,19 +48,13 @@ export default class Start extends Command {
     if (flags.socket) {
       dargs.push('--socket=' + flags.socket)
     }
-    if (args.project) {
-      dargs.push(dir)
-    } else {
-      cli.error('Project directory not specified or is invalid.')
-    }
+    dargs.push(dir)
 
     if (CtcProject.isLocked(dir)) {
       cli.error('Project is in use by another application.')
     }
 
-    if (this.config.debug) {
-      this.log(`Using ${process.argv[0]} (${dargs}) as the server`)
-    }
+    this.debug(`Using ${process.argv[0]} (${dargs}) as the server`)
 
     const server = spawn(process.argv[0], dargs, {
       detached: (flags.daemon),
@@ -74,10 +63,7 @@ export default class Start extends Command {
 
     if (flags.daemon) {
       server.unref()
-      if (this.config.debug) {
-        this.log(`Server PID is: ${server.pid}`)
-      }
-      // TODO: ensure PID is written to file; log control and public http(s) ports
+      this.debug(`Server PID is: ${server.pid}`)
     }
 
   }

@@ -1,6 +1,5 @@
 import {Command, flags} from '@oclif/command'
 import cli from 'cli-ux'
-import * as fs from 'fs-extra'
 import * as Path from 'path'
 
 import {CtcProject} from '../project/ctc-project'
@@ -27,13 +26,7 @@ export default class Server extends Command {
   async run() {
     const {args, flags} = this.parse(Server)
 
-    if (!args.project) {
-      this.error('Project directory not specified or is invalid.')
-    }
-
-    if (this.config.debug) {
-      this.log('Preparing server...')
-    }
+    this.debug('Preparing server...')
 
     if (!CtcProject.isProject(args.project)) {
       if (flags.daemon) {
@@ -48,9 +41,6 @@ export default class Server extends Command {
       }
     }
 
-    let project: CtcProject = new CtcProject(args.project, fs.readJsonSync(Path.join(args.project, 'project.json')))
-
-    let server = new CtcServer(project, this.config)
-    server.start()
+    new CtcServer(new CtcProject(args.project), this.config).start()
   }
 }
