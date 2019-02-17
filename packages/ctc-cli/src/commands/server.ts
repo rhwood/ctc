@@ -11,7 +11,7 @@ export default class Server extends Command {
   static description = 'Run a CTC server'
 
   // do not list server in help contents
-  static hidden = false
+  static hidden = true
 
   static flags = {
     help: flags.help({char: 'h'}),
@@ -32,17 +32,26 @@ export default class Server extends Command {
 
   async run() {
     const {args, flags} = this.parse(Server)
-
-    this.debug('Preparing server...')
-
-    if (flags.daemon) {
-      this.runDaemon(args, flags)
+    if (CtcProject.isLocked(Path.resolve(args.project))) {
+      cli.error('Project is in use by another application.')
     } else {
-      this.runNoDaemon(args, flags)
+      if (flags.daemon) {
+        this.runDaemon(args, flags)
+      } else {
+        this.runNoDaemon(args, flags)
+      }
     }
   }
 
   runDaemon(args: any, flags: any) {
+    if (CtcProject.isProject(args.project)) {
+      new CtcServer(this.getProject(args, flags), this.config).start()
+    } else {
+      this.error(`${args.project} is not a project.`)
+    }
+  }
+
+  runNoDaemon(args: any, flags: any) {
     if (!CtcProject.isProject(args.project)) {
       this.log(`${args.project} is not a project.`)
       if (cli.confirm('Initialize a project?')) {
@@ -52,14 +61,6 @@ export default class Server extends Command {
       }
     }
     new CtcServer(this.getProject(args, flags), this.config).start()
-  }
-
-  runNoDaemon(args: any, flags: any) {
-    if (CtcProject.isProject(args.project)) {
-      new CtcServer(this.getProject(args, flags), this.config).start()
-    } else {
-      this.error(`${args.project} is not a project.`)
-    }
   }
 
   getProject(args: any, flags: any): CtcProject {
