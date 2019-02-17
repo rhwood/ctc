@@ -55,7 +55,7 @@ export class CtcServer {
         cli.url(url, url)
       })
     }
-    this.ipcServer.on('error', (err) => {
+    this.ipcServer.on('error', err => {
       log.error('ERROR (IPC)', err.message)
       this.stop
     })
