@@ -28,7 +28,7 @@ export class CtcProject {
   readonly config: CtcProjectConfig
   readonly path: string
 
-  constructor(path: string, config: CtcProjectConfig | undefined) {
+  constructor(path: string, config?: CtcProjectConfig | undefined) {
     this.path = Path.resolve(path)
     if (config === undefined) {
       let json = Path.join(this.path, 'project.json')
@@ -44,15 +44,19 @@ export class CtcProject {
 
   public lock() {
     let lock: string = Path.join(this.path, 'lock')
-    fs.writeFile(lock, process.pid).catch(err => {
+    try {
+      fs.writeFileSync(lock, process.pid)
+    } catch (err) {
       log.error('ERROR', 'Unable to lock project: %s', err)
-    })
+    }
   }
 
   public unlock() {
     let lock: string = Path.join(this.path, 'lock')
-    fs.remove(lock).catch(err => {
-      log.error('ERROR', 'Unable to lock project: %s', err)
-    })
+    try {
+      fs.removeSync(lock)
+    } catch (err) {
+      log.error('ERROR', 'Unable to unlock project: %s', err)
+    }
   }
 }
