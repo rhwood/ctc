@@ -55,7 +55,10 @@ export class CtcServer {
         cli.url(url, url)
       })
     }
-    this.ipcServer.on('error', this.stop)
+    this.ipcServer.on('error', (err) => {
+      log.error('ERROR (IPC)', err.message)
+      this.stop
+    })
     this.ipcServer.on('listening', () => {
       this.ipcStatus = CtcServerStatus.Started
     })

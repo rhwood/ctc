@@ -9,19 +9,19 @@ import {CtcProject} from '../../src/project/ctc-project'
 import {CtcProjectConfig} from '../../src/project/ctc-project-config'
 import {CtcServer, CtcServerStatus} from '../../src/server/ctc-server'
 
-describe('server pid cache', () => {
+describe('CtcServer.cachePID', () => {
   let projectConfig: CtcProjectConfig = {
     name: 'Test Project',
     control: {hostname: 'localhost', port: 0, socket: ''},
     http: {hostname: 'localhost', port: 0, secure: false},
     ctc: {version: '0.0.0'}
   }
-  let cacheDir = path.resolve('./tmp')
+  let cacheDir = path.resolve('.', 'tmp', 'cache')
   let pidCache = test
     .env({XDG_CACHE_HOME: cacheDir})
     .stderr()
     .stdout()
-    .add('cacheFile', `${cacheDir}/pid-${process.pid}.json`)
+    .add('cacheFile', path.resolve(cacheDir, `pid-${process.pid}.json`))
     .add('serverConfig', new Config({root: ''}))
     .add('project', new CtcProject(`${cacheDir}`, projectConfig))
     .do(ctx => {
@@ -54,19 +54,19 @@ describe('server pid cache', () => {
     })
 })
 
-describe('start and stop socket server', () => {
+describe('CtcServer.start and .stop (IPC)', () => {
   let projectConfig: CtcProjectConfig = {
     name: 'Test Project',
     control: {hostname: 'localhost', port: 0, socket: ''},
     http: {hostname: 'localhost', port: 4242, secure: false},
     ctc: {version: '0.0.0'}
   }
-  let cacheDir = path.resolve('./tmp')
+  let cacheDir = path.resolve('.', 'tmp', 'cache')
   let server: CtcServer
   let ctc = test
     .env({XDG_CACHE_HOME: cacheDir})
-    // .stderr()
-    // .stdout()
+    .stderr()
+    .stdout()
     .add('serverConfig', new Config({root: ''}))
     .add('project', new CtcProject(`${cacheDir}`, projectConfig))
     .do(ctx => {
@@ -78,16 +78,24 @@ describe('start and stop socket server', () => {
     expect(CtcProject.isLocked(ctx.project.path)).is.false
     server.start()
     expect(CtcProject.isLocked(ctx.project.path)).is.true
-  })
-  ctc.it('stops', ctx => {
     waitUntil()
       .interval(100)
       .times(20)
       .condition(() => server.ipcStatus === CtcServerStatus.Started)
       .done(() => {
-        expect(CtcProject.isLocked(ctx.project.path)).is.true
-        server.stop()
-        expect(CtcProject.isLocked(ctx.project.path)).is.false
+        expect(server.ipcStatus).is.equal(CtcServerStatus.Started)
+      })
+  })
+  ctc.it('stops', ctx => {
+    expect(CtcProject.isLocked(ctx.project.path)).is.true
+    server.stop()
+    expect(CtcProject.isLocked(ctx.project.path)).is.false
+    waitUntil()
+      .interval(100)
+      .times(20)
+      .condition(() => server.ipcStatus === CtcServerStatus.Stopped)
+      .done(() => {
+        expect(server.ipcStatus).is.equal(CtcServerStatus.Stopped)
       })
   })
 })
