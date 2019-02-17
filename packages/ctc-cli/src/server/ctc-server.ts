@@ -55,13 +55,8 @@ export class CtcServer {
         cli.url(url, url)
       })
     }
-    this.ipcServer.on('error', err => {
-      log.error('ERROR (IPC)', err.message)
-      this.stop
-    })
-    this.ipcServer.on('listening', () => {
-      this.ipcStatus = CtcServerStatus.Started
-    })
+    this.ipcServer.on('error', this.ipcOnError)
+    this.ipcServer.on('listening', this.ipcOnListening)
     if (this.project.config.control.port) {
       this.ipcServer.listen(this.project.config.control.port, this.project.config.control.hostname)
     } else if (this.project.config.control.socket) {
@@ -97,5 +92,14 @@ export class CtcServer {
     } catch (err) {
       log.error('ERROR writing PID', '%s', err)
     }
+  }
+
+  ipcOnError(err: Error) {
+    log.error('ERROR (IPC)', err.message)
+    this.stop()
+  }
+
+  ipcOnListening() {
+    this.ipcStatus = CtcServerStatus.Started
   }
 }
