@@ -62,14 +62,17 @@ export class CtcServer {
     } else if (this.project.config.control.socket) {
       this.ipcServer.listen(this.project.config.control.socket)
     }
-    process.on('SIGTERM', () => { this.stop() })
-    process.on('SIGINT', () => { this.stop() })
-    process.on('SIGHUP', () => { this.stop() })
-    process.on('SIGBREAK', () => { this.stop() })
+    process.on('SIGTERM', () => { this.stop('Exiting on SIGTERM') })
+    process.on('SIGINT', () => { this.stop('Exiting on SIGINT') })
+    process.on('SIGHUP', () => { this.stop('Exiting on SIGHUP') })
+    process.on('SIGBREAK', () => { this.stop('Exiting on SIGBREAK') })
   }
 
-  stop() {
+  stop(message?: string | undefined) {
     cli.debug('Stopping server...')
+    if (message) {
+      cli.info(message)
+    }
     this.httpServer.close()
     this.ipcServer.close()
     this.project.unlock()
