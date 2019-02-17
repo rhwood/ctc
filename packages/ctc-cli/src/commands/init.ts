@@ -32,7 +32,10 @@ export default class Init extends Command {
 
   async run() {
     const {args, flags} = this.parse(Init)
+    this.createProject(args, flags)
+  }
 
+  createProject(args: any, flags: any) {
     if (flags.port && isNaN(Number(flags.port))) {
       this.error(`Port "${flags.port}" is not a networkable port.`)
     }
@@ -46,9 +49,18 @@ export default class Init extends Command {
     }
     fs.mkdirsSync(args.project)
 
+    this.createConfig((flags.port) ? Number(flags.port) : 4242, (flags.socket) ? flags.socket : '')
+      .then(config => {
+        let properties: string = path.join(args.project, 'project.json')
+        fs.writeJson(properties, config, {spaces: 2}).catch((error: Error) => {
+          this.error(`Unable to write ${properties}: ${error.message}`)
+        })
+      })
+      .catch()
+  }
+
+  async createConfig(port: number, socket: string): Promise<CtcProjectConfig> {
     let name = await cli.prompt('Project name')
-    let port = (flags.port) ? Number(flags.port) : 4242
-    let socket = (flags.socket) ? flags.socket : ''
     let hostname = '127.0.0.1'
     let config: CtcProjectConfig = {
       name,
@@ -56,11 +68,6 @@ export default class Init extends Command {
       http: {hostname, port: 0, secure: false},
       ctc: {version: this.config.version}
     }
-
-    let properties: string = path.join(args.project, 'project.json')
-
-    fs.writeJson(properties, config, {spaces: 2}).catch((error: Error) => {
-      this.error(`Unable to write ${properties}: ${error.message}`)
-    })
+    return config
   }
 }
