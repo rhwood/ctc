@@ -39,16 +39,7 @@ export default class Init extends Command {
     if (flags.port && isNaN(Number(flags.port))) {
       this.error(`Port "${flags.port}" is not a networkable port.`)
     }
-
-    if (fs.pathExistsSync(args.project)) {
-      if (!flags.overwrite) {
-        this.error('Project directory already exists.')
-      } else {
-        fs.removeSync(args.project)
-      }
-    }
-    fs.mkdirsSync(args.project)
-
+    this.createProjectDir(args.project, flags.overwrite)
     this.createConfig((flags.port) ? Number(flags.port) : 4242, (flags.socket) ? flags.socket : '')
       .then(config => {
         let properties: string = path.join(args.project, 'project.json')
@@ -57,6 +48,17 @@ export default class Init extends Command {
         })
       })
       .catch()
+  }
+
+  createProjectDir(dir: string, overwrite: boolean) {
+    if (fs.pathExistsSync(dir)) {
+      if (!overwrite) {
+        this.error('Project directory already exists.')
+      } else {
+        fs.removeSync(dir)
+      }
+    }
+    fs.mkdirsSync(dir)
   }
 
   async createConfig(port: number, socket: string): Promise<CtcProjectConfig> {
