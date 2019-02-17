@@ -2,10 +2,12 @@ import {Config} from '@oclif/config'
 import {expect, test} from '@oclif/test'
 import * as fs from 'fs-extra'
 import * as path from 'path'
+//import * as waitUntil from 'wait-until'
+const waitUntil = require('wait-until')
 
 import {CtcProject} from '../../src/project/ctc-project'
 import {CtcProjectConfig} from '../../src/project/ctc-project-config'
-import {CtcServer} from '../../src/server/ctc-server'
+import {CtcServer, CtcServerStatus} from '../../src/server/ctc-server'
 
 describe('server pid cache', () => {
   let projectConfig: CtcProjectConfig = {
@@ -50,4 +52,42 @@ describe('server pid cache', () => {
     .it('cleanup', ctx => {
       expect(fs.pathExistsSync(ctx.cacheFile)).to.false
     })
+})
+
+describe('start and stop socket server', () => {
+  let projectConfig: CtcProjectConfig = {
+    name: 'Test Project',
+    control: {hostname: 'localhost', port: 0, socket: ''},
+    http: {hostname: 'localhost', port: 4242, secure: false},
+    ctc: {version: '0.0.0'}
+  }
+  let cacheDir = path.resolve('./tmp')
+  let server: CtcServer
+  let ctc = test
+    .env({XDG_CACHE_HOME: cacheDir})
+    // .stderr()
+    // .stdout()
+    .add('serverConfig', new Config({root: ''}))
+    .add('project', new CtcProject(`${cacheDir}`, projectConfig))
+    .do(ctx => {
+      fs.ensureDirSync(cacheDir)
+      ctx.serverConfig.cacheDir = `${cacheDir}`
+      server = new CtcServer(ctx.project, ctx.serverConfig)
+    })
+  ctc.it('starts', ctx => {
+    expect(CtcProject.isLocked(ctx.project.path)).is.false
+    server.start()
+    expect(CtcProject.isLocked(ctx.project.path)).is.true
+  })
+  ctc.it('stops', ctx => {
+    waitUntil()
+      .interval(100)
+      .times(20)
+      .condition(() => server.ipcStatus === CtcServerStatus.Started)
+      .done(() => {
+        expect(CtcProject.isLocked(ctx.project.path)).is.true
+        server.stop()
+        expect(CtcProject.isLocked(ctx.project.path)).is.false
+      })
+  })
 })

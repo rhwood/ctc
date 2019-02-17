@@ -1,11 +1,10 @@
 import {IConfig} from '@oclif/config'
 import {cli} from 'cli-ux'
 import * as fs from 'fs-extra'
-import http = require('http')
+import * as http from 'http'
+import * as net from 'net'
 import * as log from 'npmlog'
 import * as Path from 'path'
-
-let ipc = new (require('node-ipc')).IPC()
 
 import {CtcProject} from '../project/ctc-project'
 import {CtcControlConfig} from '../project/ctc-project-config'
@@ -16,6 +15,8 @@ interface PID {
   control: CtcControlConfig
 }
 
+export enum CtcServerStatus {Starting, Started, Stopping, Stopped}
+
 export class CtcServer {
   readonly project: CtcProject
   readonly config: IConfig
@@ -25,21 +26,27 @@ export class CtcServer {
     response.setHeader('Content-Type', 'text/plain')
     response.end('Hello World\n')
   })
-  readonly ipcServer: any
+  readonly ipcServer = net.createServer(connection => {
+    cli.debug('Received new connection...')
+    connection.on('data', data => {
+      cli.debug(`Received ${data}`)
+      if (data.toString() === 'stop') {
+        connection.end()
+        this.stop()
+      }
+    })
+  })
+  httpStatus: CtcServerStatus = CtcServerStatus.Stopped
+  ipcStatus: CtcServerStatus = CtcServerStatus.Stopped
 
   constructor(project: CtcProject, config: IConfig) {
     this.project = project
     this.config = config
-    if (this.project.config.control.port) {
-      ipc.serveNet(this.project.config.control.hostname, this.project.config.control.port, this.ipcServerCallback)
-    } else {
-      ipc.serve(this.project.config.control.socket, this.ipcServerCallback)
-    }
-    this.ipcServer = ipc.server
   }
 
   start() {
     this.project.lock()
+    this.ipcStatus = CtcServerStatus.Starting
     if (this.project.config.http.port) {
       this.httpServer.listen(this.project.config.http.port, this.project.config.http.hostname, () => {
         // tslint:disable-next-line:no-http-string
@@ -48,7 +55,15 @@ export class CtcServer {
         cli.url(url, url)
       })
     }
-    this.ipcServer.start()
+    this.ipcServer.on('error', this.stop)
+    this.ipcServer.on('listening', () => {
+      this.ipcStatus = CtcServerStatus.Started
+    })
+    if (this.project.config.control.port) {
+      this.ipcServer.listen(this.project.config.control.port, this.project.config.control.hostname)
+    } else if (this.project.config.control.socket) {
+      this.ipcServer.listen(this.project.config.control.socket)
+    }
     process.on('SIGTERM', () => { this.stop() })
     process.on('SIGINT', () => { this.stop() })
     process.on('SIGHUP', () => { this.stop() })
@@ -58,16 +73,8 @@ export class CtcServer {
   stop() {
     cli.debug('Stopping server...')
     this.httpServer.close()
-    this.ipcServer.stop()
+    this.ipcServer.close()
     this.project.unlock()
-  }
-
-  ipcServerCallback() {
-    ipc.server.on(
-      'stop', function () { // can take parameters (data: any, socket: any)
-        stop()
-      }
-    )
   }
 
   cachePID(remove?: boolean | undefined) {
