@@ -1,6 +1,8 @@
 import {expect, test} from '@oclif/test'
 import * as fs from 'fs-extra'
 import * as path from 'path'
+//import * as waitUntil from 'wait-until'
+const waitUntil = require('wait-until')
 
 import {CtcProject} from '../../src/project/ctc-project'
 
@@ -80,4 +82,44 @@ describe('CtcProject.lock and .unlock', () => {
     fs.chmodSync(ctx.dir, '700')
     expect(ctx.stderr).to.contain('Unable to unlock project')
   })
+})
+
+describe('CtcProject constructor from file', () => {
+  let pt = test
+    .add('dir', path.resolve('.', 'tmp', 'project'))
+    .add('json', ctx => path.resolve(ctx.dir, 'project.json'))
+    .stdout()
+    .stderr()
+  pt
+    .do(ctx => {
+      let project = new CtcProject(ctx.dir, CtcProject.createConfig('test', 0, ''))
+      project.save().catch(() => {})
+    })
+    .it('valid project.json', ctx => {
+      waitUntil()
+        .interval(100)
+        .times(20)
+        .condition(() => fs.existsSync(ctx.json))
+        .done(() => {
+          let project = new CtcProject(ctx.dir)
+          expect(project.config.name).to.equal('test')
+          expect(project.config.control.hostname).to.equal('localhost')
+          expect(project.config.control.port).to.equal(0)
+          expect(project.config.control.socket).to.equal('')
+        })
+    })
+  pt
+    .do(ctx => {
+      fs.writeFileSync(ctx.json, '')
+      new CtcProject(ctx.dir)
+    })
+    .catch(error => expect(error.message).to.contain(' has an invalid project.json file.'))
+    .it('invalid project.json')
+  pt
+    .do(ctx => {
+      fs.unlinkSync(ctx.json)
+      new CtcProject(ctx.dir)
+    })
+    .catch(error => expect(error.message).to.contain(' is not a project.'))
+    .it('missing project.json')
 })
