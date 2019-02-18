@@ -17,14 +17,14 @@ describe('invalid stops', () => {
     .stderr()
     .command(['stop'])
     .it('working dir is not a project', ctx => {
-      expect(ctx.stderr).to.contain(' is not a project')
+      expect(ctx.stderr.replace(/›/g, '').replace(/\s+/g, ' ')).to.contain(' is not a project')
     })
   test
     .stderr()
     .command(['stop', '--pid=0'])
     .it('pid = 0', ctx => {
       // falls through to project since PID is falsy
-      expect(ctx.stderr).to.contain(' is not a project')
+      expect(ctx.stderr.replace(/›/g, '').replace(/\s+/g, ' ')).to.contain(' is not a project')
     })
   test
     .stderr()
