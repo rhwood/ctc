@@ -2,6 +2,7 @@ import {IConfig} from '@oclif/config'
 import {cli} from 'cli-ux'
 import * as fs from 'fs-extra'
 import * as http from 'http'
+import JsonSocket from 'json-socket'
 import * as net from 'net'
 import * as log from 'npmlog'
 import * as Path from 'path'
@@ -9,7 +10,7 @@ import * as Path from 'path'
 import {CtcProject} from '../project/ctc-project'
 import {CtcControlConfig} from '../project/ctc-project-config'
 
-interface PID {
+export interface PID {
   pid: number,
   project: string,
   control: CtcControlConfig
@@ -26,13 +27,18 @@ export class CtcServer {
     response.setHeader('Content-Type', 'text/plain')
     response.end('Hello World\n')
   })
-  readonly ipcServer = net.createServer(connection => {
-    cli.debug('Received new connection...')
-    connection.on('data', data => {
-      cli.debug(`Received ${data}`)
-      if (data.toString() === 'stop') {
-        connection.end()
-        this.stop()
+  readonly ipcServer = net.createServer((socket: net.Socket | JsonSocket) => {
+    socket = new JsonSocket(socket)
+    socket.on('message', message => {
+      if (message.command !== undefined) {
+        try {
+          let response = this.ipcOnCommand(message.command, message.data)
+          if (response !== undefined) {
+            (socket as JsonSocket).sendMessage(message, () => {})
+          }
+        } catch (error) {
+          (socket as JsonSocket).sendError(error, () => {})
+        }
       }
     })
   })
@@ -45,6 +51,7 @@ export class CtcServer {
   }
 
   start() {
+    this.cachePID()
     this.project.lock()
     this.ipcStatus = CtcServerStatus.Starting
     if (this.project.config.http.port) {
@@ -76,6 +83,7 @@ export class CtcServer {
     this.httpServer.close()
     this.ipcServer.close()
     this.project.unlock()
+    this.cachePID(true)
   }
 
   cachePID(remove?: boolean | undefined) {
@@ -104,5 +112,15 @@ export class CtcServer {
 
   ipcOnListening() {
     this.ipcStatus = CtcServerStatus.Started
+  }
+
+  ipcOnCommand(command: string, data: any | undefined): any {
+    switch (command) {
+    case 'stop':
+      this.stop('Exiting on command')
+      break
+    default:
+      throw new Error(`Unknown command ${command} (data: ${data})`)
+    }
   }
 }
