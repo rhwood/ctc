@@ -5,7 +5,7 @@ describe('command stop', () => {
     .stdout()
     .command(['help', 'stop'])
     .it('runs help', ctx => {
-      expect(ctx.stdout).to.contain('$ ctc stop PROJECT')
+      expect(ctx.stdout).to.contain('$ ctc stop [PATH]')
       expect(ctx.stdout).to.contain('--pid=pid')
       expect(ctx.stdout).to.contain('--port=port')
       expect(ctx.stdout).to.contain('--server=server')

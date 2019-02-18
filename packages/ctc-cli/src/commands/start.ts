@@ -34,7 +34,7 @@ export default class Start extends Server {
     }),
   }
 
-  static args = [{name: 'project', descripton: 'project directory', default: path.resolve()}]
+  static args = [{name: 'path', descripton: 'project directory', default: path.resolve()}]
 
   async run() {
     const {args, flags} = this.parse(Start)
@@ -50,7 +50,7 @@ export default class Start extends Server {
     if (flags.socket) {
       dargs.push('--socket=' + flags.socket)
     }
-    dargs.push(path.resolve(args.project))
+    dargs.push(path.resolve(args.path))
     this.debug(`Using ${process.argv[0]} (${dargs}) as the server`)
 
     const server = spawn(process.argv[0], dargs, {

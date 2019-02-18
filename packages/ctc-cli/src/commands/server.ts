@@ -28,7 +28,7 @@ export default class Server extends Command {
     })
   }
 
-  static args = [{name: 'project', descripton: 'project directory', default: path.resolve()}]
+  static args = [{name: 'path', descripton: 'project directory', default: path.resolve()}]
 
   async run() {
     const {args, flags} = this.parse(Server)
@@ -36,7 +36,7 @@ export default class Server extends Command {
   }
 
   runCommon(args: any, flags: any) {
-    if (CtcProject.isLocked(path.resolve(args.project))) {
+    if (CtcProject.isLocked(path.resolve(args.path))) {
       cli.error('Project is in use by another application.')
     } else {
       if (flags.daemon) {
@@ -50,19 +50,19 @@ export default class Server extends Command {
   }
 
   runDaemon(args: any, flags: any) {
-    if (CtcProject.isProject(args.project)) {
+    if (CtcProject.isProject(args.path)) {
       new CtcServer(this.getProject(args, flags), this.config).start()
     } else {
-      this.error(`${args.project} is not a project.`)
+      this.error(`${args.path} is not a project.`)
     }
   }
 
   async runNoDaemon(args: any, flags: any) {
-    if (!CtcProject.isProject(args.project)) {
-      cli.info(`${args.project} is not a project.`)
+    if (!CtcProject.isProject(args.path)) {
+      cli.info(`${args.path} is not a project.`)
       if (await cli.confirm('Initialize a project?')) {
-        Init.run([args.project]).then(() => {
-          if (CtcProject.isProject(args.project)) {
+        Init.run([args.path]).then(() => {
+          if (CtcProject.isProject(args.path)) {
             // TODO: figure out how to pass rejection from Init.run so if is not needed
             new CtcServer(this.getProject(args, flags), this.config).start()
           }
@@ -74,7 +74,7 @@ export default class Server extends Command {
   }
 
   getProject(args: any, flags: any): CtcProject {
-    let project = new CtcProject(args.project)
+    let project = new CtcProject(args.path)
     if (flags.port) {
       project.config.control.port = flags.port
     }

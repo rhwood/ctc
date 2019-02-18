@@ -44,7 +44,7 @@ export default class Stop extends Command {
     }),
   }
 
-  static args = [{name: 'project', descripton: 'project directory', default: path.resolve()}]
+  static args = [{name: 'path', descripton: 'project directory', default: path.resolve()}]
 
   async run() {
     const {args, flags} = this.parse(Stop)
@@ -53,7 +53,7 @@ export default class Stop extends Command {
     } else if (flags.port) {
       this.stopServer((flags.server !== undefined) ? flags.server : 'localhost', flags.port)
     } else {
-      this.stopProject(args.project)
+      this.stopProject(args.path)
     }
   }
 

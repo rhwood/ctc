@@ -33,9 +33,9 @@ USAGE
 <!-- commands -->
 * [`ctc autocomplete [SHELL]`](#ctc-autocomplete-shell)
 * [`ctc help [COMMAND]`](#ctc-help-command)
-* [`ctc init [PROJECT]`](#ctc-init-project)
-* [`ctc start [PROJECT]`](#ctc-start-project)
-* [`ctc stop [PROJECT]`](#ctc-stop-project)
+* [`ctc init [PATH]`](#ctc-init-path)
+* [`ctc start [PATH]`](#ctc-start-path)
+* [`ctc stop [PATH]`](#ctc-stop-path)
 
 ## `ctc autocomplete [SHELL]`
 
@@ -77,13 +77,13 @@ OPTIONS
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.6/src/commands/help.ts)_
 
-## `ctc init [PROJECT]`
+## `ctc init [PATH]`
 
 Create a CTC project
 
 ```
 USAGE
-  $ ctc init [PROJECT]
+  $ ctc init [PATH]
 
 OPTIONS
   -n, --name=name      project name
@@ -93,18 +93,18 @@ OPTIONS
 
 EXAMPLE
   $ ctc init myProject
-       Create a CTC project in the directory 'myProject'.
+       Create a CTC project in the directory 'myProject'
 ```
 
 _See code: [src/commands/init.ts](https://github.com/rhwood/ctc/blob/v0.0.0/src/commands/init.ts)_
 
-## `ctc start [PROJECT]`
+## `ctc start [PATH]`
 
 Start a CTC server
 
 ```
 USAGE
-  $ ctc start [PROJECT]
+  $ ctc start [PATH]
 
 OPTIONS
   -d, --[no-]daemon    start a background process
@@ -122,13 +122,13 @@ EXAMPLES
 
 _See code: [src/commands/start.ts](https://github.com/rhwood/ctc/blob/v0.0.0/src/commands/start.ts)_
 
-## `ctc stop [PROJECT]`
+## `ctc stop [PATH]`
 
 Stop a running CTC process
 
 ```
 USAGE
-  $ ctc stop [PROJECT]
+  $ ctc stop [PATH]
 
 OPTIONS
   -P, --pid=pid        stop CTC running at process id
