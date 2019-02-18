@@ -42,8 +42,9 @@ export default class Server extends Command {
       if (flags.daemon) {
         this.runDaemon(args, flags)
       } else {
-        // TODO: figure out how to make this catch "real"
-        this.runNoDaemon(args, flags).catch(error => { cli.error(error.message) })
+        this.runNoDaemon(args, flags)
+          .then(() => {}, error => { cli.error(error.message, {exit: false}) })
+          .catch(error => { cli.error(error.message) })
       }
     }
   }
@@ -58,14 +59,18 @@ export default class Server extends Command {
 
   async runNoDaemon(args: any, flags: any) {
     if (!CtcProject.isProject(args.project)) {
-      this.log(`${args.project} is not a project.`)
+      cli.info(`${args.project} is not a project.`)
       if (await cli.confirm('Initialize a project?')) {
-        await Init.run([args.project])
-      } else {
-        return // abort here
+        Init.run([args.project]).then(() => {
+          if (CtcProject.isProject(args.project)) {
+            // TODO: figure out how to pass rejection from Init.run so if is not needed
+            new CtcServer(this.getProject(args, flags), this.config).start()
+          }
+        }, rejection => { cli.error(rejection, {exit: false}) })
       }
+    } else {
+      new CtcServer(this.getProject(args, flags), this.config).start()
     }
-    new CtcServer(this.getProject(args, flags), this.config).start()
   }
 
   getProject(args: any, flags: any): CtcProject {

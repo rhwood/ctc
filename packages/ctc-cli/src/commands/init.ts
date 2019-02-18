@@ -37,23 +37,26 @@ export default class Init extends Command {
 
   createProject(args: any, flags: any) {
     if (flags.port && isNaN(Number(flags.port))) {
-      this.error(`Port "${flags.port}" is not a networkable port.`)
+      cli.error(`Port "${flags.port}" is not a networkable port.`, {exit: false})
     }
     this.createProjectDir(args.project, flags.overwrite)
-    this.createConfig((flags.port) ? Number(flags.port) : 4242, (flags.socket) ? flags.socket : '')
-      .then(config => {
-        let properties: string = path.join(args.project, 'project.json')
-        fs.writeJson(properties, config, {spaces: 2}).catch((error: Error) => {
-          this.error(`Unable to write ${properties}: ${error.message}`)
-        })
-      })
+      .then(() => {
+        this.createConfig((flags.port) ? Number(flags.port) : 4242, (flags.socket) ? flags.socket : '')
+          .then(config => {
+            let properties: string = path.join(args.project, 'project.json')
+            fs.writeJson(properties, config, {spaces: 2}).catch((error: Error) => {
+              cli.error(`Unable to write ${properties}: ${error.message}`, {exit: false})
+            })
+          })
+          .catch()
+      }, rejection => { cli.error(rejection, {exit: false}) })
       .catch()
   }
 
-  createProjectDir(dir: string, overwrite: boolean) {
+  async createProjectDir(dir: string, overwrite: boolean) {
     if (fs.pathExistsSync(dir)) {
       if (!overwrite) {
-        this.error('Project directory already exists.')
+        return Promise.reject('Project directory already exists.')
       } else {
         fs.removeSync(dir)
       }
