@@ -45,12 +45,7 @@ describe('CtcProject.lock and .unlock', () => {
   let project = test
     .add('dir', path.resolve('.', 'tmp', 'project'))
     .add('lock', ctx => path.resolve(ctx.dir, 'lock'))
-    .add('project', ctx => new CtcProject(ctx.dir, {
-      name: 'test',
-      control: {hostname: 'localhost', port: 0, socket: ''},
-      http: {hostname: 'localhost', port: 0, secure: false},
-      ctc: {version: '0.0.0'}
-    }))
+    .add('project', ctx => new CtcProject(ctx.dir, CtcProject.createConfig('test', 0, '')))
     .stderr()
     .do(ctx => {
       fs.removeSync(ctx.dir)

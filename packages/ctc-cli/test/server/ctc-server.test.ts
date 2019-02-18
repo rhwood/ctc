@@ -6,16 +6,10 @@ import * as path from 'path'
 const waitUntil = require('wait-until')
 
 import {CtcProject} from '../../src/project/ctc-project'
-import {CtcProjectConfig} from '../../src/project/ctc-project-config'
 import {CtcServer, CtcServerStatus} from '../../src/server/ctc-server'
 
 describe('CtcServer.cachePID', () => {
-  let projectConfig: CtcProjectConfig = {
-    name: 'Test Project',
-    control: {hostname: 'localhost', port: 0, socket: ''},
-    http: {hostname: 'localhost', port: 0, secure: false},
-    ctc: {version: '0.0.0'}
-  }
+  let projectConfig = CtcProject.createConfig('Test Project', 0, '')
   let cacheDir = path.resolve('.', 'tmp', 'cache')
   let pidCache = test
     .env({XDG_CACHE_HOME: cacheDir})
@@ -55,12 +49,7 @@ describe('CtcServer.cachePID', () => {
 })
 
 describe('CtcServer.start and .stop (IPC)', () => {
-  let projectConfig: CtcProjectConfig = {
-    name: 'Test Project',
-    control: {hostname: 'localhost', port: 4243, socket: ''},
-    http: {hostname: 'localhost', port: 4242, secure: false},
-    ctc: {version: '0.0.0'}
-  }
+  let projectConfig = CtcProject.createConfig('Test Project', 4243, '')
   let cacheDir = path.resolve('.', 'tmp', 'cache')
   let server: CtcServer
   let ctc = test

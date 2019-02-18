@@ -2,6 +2,8 @@ import * as fs from 'fs-extra'
 import * as log from 'npmlog'
 import * as Path from 'path'
 
+import {version} from '../../package.json'
+
 import {CtcProjectConfig} from './ctc-project-config'
 
 export class CtcProject {
@@ -23,6 +25,17 @@ export class CtcProject {
       }
     }
     return false
+  }
+
+  static createConfig(name: string, port: number, socket: string): CtcProjectConfig {
+    let hostname = 'localhost'
+    let config: CtcProjectConfig = {
+      name,
+      control: {hostname, port, socket},
+      http: {hostname, port: 0, secure: false},
+      ctc: {version}
+    }
+    return config
   }
 
   readonly config: CtcProjectConfig

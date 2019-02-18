@@ -3,6 +3,7 @@ import {cli} from 'cli-ux'
 import * as fs from 'fs-extra'
 import * as path from 'path'
 
+import {CtcProject} from '../project/ctc-project'
 import {CtcProjectConfig} from '../project/ctc-project-config'
 
 export default class Init extends Command {
@@ -66,13 +67,6 @@ export default class Init extends Command {
 
   async createConfig(port: number, socket: string): Promise<CtcProjectConfig> {
     let name = await cli.prompt('Project name')
-    let hostname = '127.0.0.1'
-    let config: CtcProjectConfig = {
-      name,
-      control: {hostname, port, socket},
-      http: {hostname, port: 0, secure: false},
-      ctc: {version: this.config.version}
-    }
-    return config
+    return CtcProject.createConfig(name, port, socket)
   }
 }
