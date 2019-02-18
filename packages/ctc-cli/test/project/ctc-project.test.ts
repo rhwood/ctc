@@ -92,6 +92,8 @@ describe('CtcProject constructor from file', () => {
     .stderr()
   pt
     .do(ctx => {
+      fs.removeSync(ctx.dir)
+      fs.mkdirsSync(ctx.dir)
       let project = new CtcProject(ctx.dir, CtcProject.createConfig('test', 0, ''))
       project.save().catch(() => {})
     })

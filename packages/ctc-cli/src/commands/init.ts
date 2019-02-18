@@ -16,8 +16,9 @@ export default class Init extends Command {
   ]
 
   static flags = {
+    name: flags.string({char: 'n', description: 'project name', default: ''}),
     overwrite: flags.boolean({char: 'u', description: 'overwrite existing project if one exists'}),
-    port: flags.string({
+    port: flags.integer({
       char: 'p',
       description: 'use networkable port for server control',
       exclusive: ['socket'],
@@ -42,11 +43,11 @@ export default class Init extends Command {
     }
     this.createProjectDir(args.project, flags.overwrite)
       .then(() => {
-        this.createConfig((flags.port) ? Number(flags.port) : 4242, (flags.socket) ? flags.socket : '')
+        this.createConfig(flags.name, (flags.port) ? Number(flags.port) : 4242, (flags.socket) ? flags.socket : '')
           .then(config => {
-            let properties: string = path.join(args.project, 'project.json')
-            fs.writeJson(properties, config, {spaces: 2}).catch((error: Error) => {
-              cli.error(`Unable to write ${properties}: ${error.message}`, {exit: false})
+            let project = new CtcProject(args.project, config)
+            project.save().catch((error: Error) => {
+              cli.error(`Unable to write project: ${error.message}`, {exit: false})
             })
           })
           .catch()
@@ -65,8 +66,10 @@ export default class Init extends Command {
     fs.mkdirsSync(dir)
   }
 
-  async createConfig(port: number, socket: string): Promise<CtcProjectConfig> {
-    let name = await cli.prompt('Project name')
+  async createConfig(name: string, port: number, socket: string): Promise<CtcProjectConfig> {
+    if (!name) {
+      name = await cli.prompt('Project name')
+    }
     return CtcProject.createConfig(name, port, socket)
   }
 }

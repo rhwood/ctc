@@ -38,25 +38,29 @@ export class CtcProject {
     return config
   }
 
+  static readConfig(path: string): CtcProjectConfig {
+    let json = Path.join(path, 'project.json')
+    let config: CtcProjectConfig
+    try {
+      config = fs.readJsonSync(json)
+    } catch {
+      if (!fs.existsSync(json)) {
+        throw new Error(`${path} is not a project.`)
+      }
+      throw new Error(`${path} has an invalid project.json file.`)
+    }
+    return config
+  }
+
   readonly config: CtcProjectConfig
   readonly path: string
 
   constructor(path: string, config?: CtcProjectConfig | undefined) {
     this.path = Path.resolve(path)
     if (config === undefined) {
-      let json = Path.join(this.path, 'project.json')
-      if (fs.existsSync(json)) {
-        try {
-          this.config = fs.readJsonSync(json)
-        } catch {
-          throw new Error(`${path} has an invalid project.json file.`)
-        }
-      } else {
-        throw new Error(`${path} is not a project.`)
-      }
-    } else {
-      this.config = config
+      config = CtcProject.readConfig(this.path)
     }
+    this.config = config
   }
 
   public lock() {
