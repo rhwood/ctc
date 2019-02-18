@@ -46,9 +46,13 @@ export class CtcProject {
     if (config === undefined) {
       let json = Path.join(this.path, 'project.json')
       if (fs.existsSync(json)) {
-        this.config = fs.readJsonSync(json)
+        try {
+          this.config = fs.readJsonSync(json)
+        } catch {
+          throw new Error(`${path} has an invalid project.json file.`)
+        }
       } else {
-        throw new Error(`Path "${path}" is not a project.`)
+        throw new Error(`${path} is not a project.`)
       }
     } else {
       this.config = config
@@ -71,5 +75,9 @@ export class CtcProject {
     } catch (err) {
       log.error('ERROR', 'Unable to unlock project: %s', err)
     }
+  }
+
+  public async save() {
+    return fs.writeJson(Path.join(this.path, 'project.json'), this.config, {spaces: 2})
   }
 }
