@@ -27,9 +27,10 @@ describe('invalid stops', () => {
       expect(ctx.stderr.replace(/›/g, '').replace(/\s+/g, ' ')).to.contain(' is not a project')
     })
   test
+    .stdout()
     .stderr()
-    .command(['stop', '--pid=1'])
-    .it('pid = 1', ctx => {
-      expect(ctx.stderr).to.contain('Unable to read connection data for process ID 1')
+    .command(['stop', `--pid=${process.pid}`])
+    .it('pid = [test process pid]', ctx => {
+      expect(ctx.stderr + ctx.stdout).to.contain(`No CTC process with id ${process.pid} appears to be running`)
     })
 })

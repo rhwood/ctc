@@ -75,21 +75,20 @@ export default class Stop extends Command {
 
   stopPID(pid: number) {
     let cache = path.resolve(this.config.cacheDir, `pid-${pid}.json`)
-    fs.pathExists(cache)
-      .then(() => {
-        fs.readJson(cache)
-          .then((json: PID) => {
-            if (json.control.port) {
-              this.stopServer(json.control.hostname, json.control.port)
-            } else {
-              this.stopSocket(json.control.socket)
-            }
-          }, () => {
-            cli.error(`Unable to read connection data for process ID ${pid}`, {exit: false})
-          })
-      }, () => {
-        cli.error(`No CTC process with ID ${pid} appears to be running.`, {exit: false})
-      })
+    if (fs.pathExistsSync(cache)) {
+      fs.readJson(cache)
+        .then((json: PID) => {
+          if (json.control.port) {
+            this.stopServer(json.control.hostname, json.control.port)
+          } else {
+            this.stopSocket(json.control.socket)
+          }
+        }, () => {
+          cli.error(`Unable to read connection data for process ID ${pid}`, {exit: false})
+        })
+    } else {
+      cli.error(`No CTC process with id ${pid} appears to be running`, {exit: false})
+    }
   }
 
   stopProject(project: string) {
@@ -97,7 +96,7 @@ export default class Stop extends Command {
       if (CtcProject.isLocked(project)) {
         this.stopPID(Number(fs.readFileSync(path.resolve(project, 'lock'))))
       } else {
-        cli.error(`${project} is not in use by a CTC server`, {exit: false})
+        cli.info(`${project} is not in use by a CTC process`)
       }
     } else {
       cli.error(`${project} is not a project`, {exit: false})
