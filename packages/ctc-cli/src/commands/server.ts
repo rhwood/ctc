@@ -28,7 +28,7 @@ export default class Server extends Command {
     })
   }
 
-  static args = [{name: 'project', descripton: 'project directory', required: true, default: path.resolve()}]
+  static args = [{name: 'project', descripton: 'project directory', default: path.resolve()}]
 
   async run() {
     const {args, flags} = this.parse(Server)
