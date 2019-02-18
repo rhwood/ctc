@@ -7,11 +7,11 @@ import {CtcProject} from '../project/ctc-project'
 import {CtcProjectConfig} from '../project/ctc-project-config'
 
 export default class Init extends Command {
-  static description = 'Create a CTC server project'
+  static description = 'Create a CTC project'
 
   static examples = [
     `$ ctc init myProject
-    Create a CTC server project in the directory 'myProject'.
+    Create a CTC project in the directory 'myProject'.
     `,
   ]
 
@@ -20,17 +20,17 @@ export default class Init extends Command {
     overwrite: flags.boolean({char: 'u', description: 'overwrite existing project if one exists'}),
     port: flags.integer({
       char: 'p',
-      description: 'use networkable port for server control',
+      description: 'use networkable port for process control',
       exclusive: ['socket'],
     }),
     socket: flags.string({
       char: 's',
-      description: 'use local socket for server control',
+      description: 'use local socket for process control',
       exclusive: ['port'],
     }),
   }
 
-  static args = [{name: 'project', descripton: 'project directory', required: true, default: path.resolve()}]
+  static args = [{name: 'project', descripton: 'project directory', default: path.resolve()}]
 
   async run() {
     const {args, flags} = this.parse(Init)

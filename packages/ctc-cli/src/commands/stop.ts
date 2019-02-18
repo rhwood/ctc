@@ -9,18 +9,18 @@ import {CtcProject} from '../project/ctc-project'
 import {PID} from '../server/ctc-server'
 
 export default class Stop extends Command {
-  static description = 'Stop a running CTC server'
+  static description = 'Stop a running CTC process'
 
   static examples = [
     `$ ctc stop
-    Stop the CTC server running the project in the current directory
+    Stop the CTC process running the project in the current directory
     (presuming the current directory is a CTC project)
     `,
     `$ ctc stop --pid=4242
-    Stop the CTC server with process ID 4242
+    Stop the CTC process with process ID 4242
     `,
     `$ ctc stop --server=192.168.4.4 --port=4242
-    Sever the CTC server on port 4242 at IP address 192.168.4.4
+    Stop the CTC process on port 4242 at IP address 192.168.4.4
     `,
   ]
 
@@ -44,7 +44,7 @@ export default class Stop extends Command {
     }),
   }
 
-  static args = [{name: 'project', descripton: 'project directory', required: true, default: path.resolve()}]
+  static args = [{name: 'project', descripton: 'project directory', default: path.resolve()}]
 
   async run() {
     const {args, flags} = this.parse(Stop)
@@ -88,7 +88,7 @@ export default class Stop extends Command {
             cli.error(`Unable to read connection data for process ID ${pid}`, {exit: false})
           })
       }, () => {
-        cli.error(`No CTC server with process ID ${pid} appears to be running.`, {exit: false})
+        cli.error(`No CTC process with ID ${pid} appears to be running.`, {exit: false})
       })
   }
 

@@ -8,7 +8,7 @@ import {CtcServer} from '../server/ctc-server'
 import Init from './init'
 
 export default class Server extends Command {
-  static description = 'Run a CTC server'
+  static description = 'Run a CTC server process'
 
   // do not list server in help contents
   static hidden = true
@@ -18,12 +18,12 @@ export default class Server extends Command {
     daemon: flags.boolean({char: 'd', allowNo: true, description: 'run as a daemon'}),
     port: flags.string({
       char: 'p',
-      description: 'use networkable port for server control',
+      description: 'use networkable port for process control',
       exclusive: ['socket'],
     }),
     socket: flags.string({
       char: 's',
-      description: 'use local socket for server control',
+      description: 'use local socket for process control',
       exclusive: ['port'],
     })
   }

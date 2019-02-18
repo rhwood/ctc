@@ -10,7 +10,7 @@ Centralized Traffic Control for Model Railroads
 
 # About
 
-The CTC application is intended to become a lightweight control panel server for model railroads that can join in a grid with other CTC instances to provide multiple panels to a user or other application.
+The CTC application is intended to become a lightweight control panel for model railroads that can join in a grid with other CTC instances to provide multiple panels to a user or other application.
 
 ## License
 

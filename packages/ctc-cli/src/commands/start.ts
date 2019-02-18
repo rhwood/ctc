@@ -12,30 +12,29 @@ export default class Start extends Server {
 
   static examples = [
     `$ ctc start
-    Start a ctc server as a background process and exit.
+    Start a CTC process in the background and exit
     `,
     `$ ctc start --no-dameon
-    Start a ctc server that blocks the curren process until
-    it exits.
+    Start a CTC process in the foreground
     `,
   ]
 
   static flags = {
-    daemon: flags.boolean({char: 'd', allowNo: true, description: 'start as a server', default: true}),
+    daemon: flags.boolean({char: 'd', allowNo: true, description: 'start a background process', default: true}),
     help: flags.help({char: 'h'}),
     port: flags.string({
       char: 'p',
-      description: 'use networkable port for server control',
+      description: 'use networkable port for process control',
       exclusive: ['socket'],
     }),
     socket: flags.string({
       char: 's',
-      description: 'use local socket for server control',
+      description: 'use local socket for process control',
       exclusive: ['port'],
     }),
   }
 
-  static args = [{name: 'project', descripton: 'project directory', required: true, default: path.resolve()}]
+  static args = [{name: 'project', descripton: 'project directory', default: path.resolve()}]
 
   async run() {
     const {args, flags} = this.parse(Start)
