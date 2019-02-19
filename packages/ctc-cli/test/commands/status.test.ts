@@ -9,8 +9,6 @@ describe('command status', () => {
       expect(ctx.stdout).to.contain('-P, --pid=pid')
       expect(ctx.stdout).to.contain('-p, --port=port')
       expect(ctx.stdout).to.contain('-s, --server=server')
-      expect(ctx.stdout).to.contain('-F, --filter=all|http')
-      expect(ctx.stdout).to.contain('-f, --format=json|url')
     })
   test
     .stderr()

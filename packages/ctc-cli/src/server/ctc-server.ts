@@ -120,24 +120,10 @@ export class CtcServer {
       this.stop('Exiting on command')
       break
     case 'status':
-      return this.ipcOnStatus(data)
+      return {pid: process.pid, project: {path: this.project.path, config: this.project.config}}
       break
     default:
       throw new Error(`Unknown command ${command} (data: ${data})`)
-    }
-  }
-
-  ipcOnStatus(data: any | undefined): any {
-    if (data === undefined || data.filter === 'all') {
-      return {pid: process.pid, project: {path: this.project.path, config: this.project.config}}
-    } else {
-      switch (data.filter) {
-      case 'http':
-        return this.project.config.http
-        break
-      default:
-        throw new Error(`Unknown filter (${data.filter}) for status`)
-      }
     }
   }
 }
