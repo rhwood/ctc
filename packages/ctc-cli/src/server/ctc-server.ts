@@ -29,12 +29,12 @@ export class CtcServer {
   })
   readonly ipcServer = net.createServer((socket: net.Socket | JsonSocket) => {
     socket = new JsonSocket(socket)
-    socket.on('message', message => {
+    socket.on('message', (message: any) => {
       if (message.command !== undefined) {
         try {
           let response = this.ipcOnCommand(message.command, message.data)
           if (response !== undefined) {
-            (socket as JsonSocket).sendMessage(message, () => {})
+            (socket as JsonSocket).sendMessage(response, () => {})
           }
         } catch (error) {
           (socket as JsonSocket).sendError(error, () => {})
@@ -119,8 +119,25 @@ export class CtcServer {
     case 'stop':
       this.stop('Exiting on command')
       break
+    case 'status':
+      return this.ipcOnStatus(data)
+      break
     default:
       throw new Error(`Unknown command ${command} (data: ${data})`)
+    }
+  }
+
+  ipcOnStatus(data: any | undefined): any {
+    if (data === undefined || data.filter === 'all') {
+      return {pid: process.pid, project: {path: this.project.path, config: this.project.config}}
+    } else {
+      switch (data.filter) {
+      case 'http':
+        return this.project.config.http
+        break
+      default:
+        throw new Error(`Unknown filter (${data.filter}) for status`)
+      }
     }
   }
 }
