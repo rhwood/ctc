@@ -28,17 +28,17 @@ export default class Stop extends Command {
     help: flags.help({char: 'h'}),
     pid: flags.integer({
       char: 'P',
-      description: 'stop CTC running at process id',
+      description: 'CTC process id',
       exclusive: ['server', 'port']
     }),
     port: flags.integer({
       char: 'p',
-      description: 'stop CTC running at port',
+      description: 'port of CTC process',
       exclusive: ['pid'],
     }),
     server: flags.string({
       char: 's',
-      description: 'stop CTC running on server',
+      description: 'server CTC process is running on',
       dependsOn: ['port'],
       exclusive: ['pid'],
     }),
