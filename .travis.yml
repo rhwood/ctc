@@ -3,3 +3,15 @@ node_js:
 - stable
 - '10'
 - '8'
+env:
+  global:
+    CC_TEST_REPORTER_ID=a811fc1f4c1439ca4194fdf29d585b42bb82e311c26979fdacfb0286fea87b4e
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+script:
+  - npm run ci-coverage
+after_script:
+  - ./cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.ctc-cli.json packages/ctc-cli/coverage/lcov.info  # Format ctc-cli coverage
+  - ./cc-test-reporter sum-coverage coverage/codeclimate.*.json -p 1                  # Sum both coverage parts into coverage/codeclimate.json
+  - if [[ "$TRAVIS_TEST_RESULT" == 0 ]]; then ./cc-test-reporter upload-coverage; fi  # Upload coverage/codeclimate.json

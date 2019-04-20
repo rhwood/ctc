@@ -18,11 +18,11 @@ Command Line Interface for the Centralized Traffic Controller Daemon
 # Usage
 <!-- usage -->
 ```sh-session
-$ npm install -g ctc-cli
+$ npm install -g ctc
 $ ctc COMMAND
 running command...
 $ ctc (-v|--version|version)
-ctc-cli/0.0.0 darwin-x64 node-v10.12.0
+ctc/0.0.0 darwin-x64 node-v11.10.0
 $ ctc --help [COMMAND]
 USAGE
   $ ctc COMMAND
@@ -33,8 +33,9 @@ USAGE
 <!-- commands -->
 * [`ctc autocomplete [SHELL]`](#ctc-autocomplete-shell)
 * [`ctc help [COMMAND]`](#ctc-help-command)
-* [`ctc init PROJECT`](#ctc-init-project)
-* [`ctc start [PROJECT]`](#ctc-start-project)
+* [`ctc init [PATH]`](#ctc-init-path)
+* [`ctc start [PATH]`](#ctc-start-path)
+* [`ctc stop [PATH]`](#ctc-stop-path)
 
 ## `ctc autocomplete [SHELL]`
 
@@ -74,50 +75,78 @@ OPTIONS
   --all  see all commands in CLI
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.3/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.6/src/commands/help.ts)_
 
-## `ctc init PROJECT`
+## `ctc init [PATH]`
 
-Create a CTC server project
+Create a CTC project
 
 ```
 USAGE
-  $ ctc init PROJECT
+  $ ctc init [PATH]
 
 OPTIONS
-  -p, --port=port      use networkable port for server control
-  -s, --socket=socket  use local socket for server control
+  -n, --name=name      project name
+  -p, --port=port      use networkable port for process control
+  -s, --socket=socket  use local socket for process control
   -u, --overwrite      overwrite existing project if one exists
 
 EXAMPLE
   $ ctc init myProject
-       Create a CTC server project in the directory 'myProject'.
+       Create a CTC project in the directory 'myProject'
 ```
 
-_See code: [src/commands/init.ts](https://github.com/rhwood/ctc-cli/blob/v0.0.0/src/commands/init.ts)_
+_See code: [src/commands/init.ts](https://github.com/rhwood/ctc/blob/v0.0.0/src/commands/init.ts)_
 
-## `ctc start [PROJECT]`
+## `ctc start [PATH]`
 
 Start a CTC server
 
 ```
 USAGE
-  $ ctc start [PROJECT]
+  $ ctc start [PATH]
 
 OPTIONS
-  -d, --[no-]daemon    start as a server
-  -f, --force          force CTC server to start
+  -d, --[no-]daemon    start a background process
   -h, --help           show CLI help
-  -p, --port=port      use networkable port for server control
-  -s, --socket=socket  use local socket for server control
+  -p, --port=port      use networkable port for process control
+  -s, --socket=socket  use local socket for process control
 
 EXAMPLES
   $ ctc start
-       Start a ctc server as a separate process and exit.
+       Start a CTC process in the background and exit
     
-  $ ctc start --no-daemon
-       Start a ctc server that runs until this command exits.
+  $ ctc start --no-dameon
+       Start a CTC process in the foreground
 ```
 
-_See code: [src/commands/start.ts](https://github.com/rhwood/ctc-cli/blob/v0.0.0/src/commands/start.ts)_
+_See code: [src/commands/start.ts](https://github.com/rhwood/ctc/blob/v0.0.0/src/commands/start.ts)_
+
+## `ctc stop [PATH]`
+
+Stop a running CTC process
+
+```
+USAGE
+  $ ctc stop [PATH]
+
+OPTIONS
+  -P, --pid=pid        stop CTC running at process id
+  -h, --help           show CLI help
+  -p, --port=port      stop CTC running at port
+  -s, --server=server  stop CTC running on server
+
+EXAMPLES
+  $ ctc stop
+       Stop the CTC process running the project in the current directory
+       (presuming the current directory is a CTC project)
+    
+  $ ctc stop --pid=4242
+       Stop the CTC process with process ID 4242
+    
+  $ ctc stop --server=192.168.4.4 --port=4242
+       Stop the CTC process on port 4242 at IP address 192.168.4.4
+```
+
+_See code: [src/commands/stop.ts](https://github.com/rhwood/ctc/blob/v0.0.0/src/commands/stop.ts)_
 <!-- commandsstop -->

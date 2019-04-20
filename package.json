@@ -5,10 +5,11 @@
     "ctc": "./packages/ctc-cli/bin/run"
   },
   "devDependencies": {
-    "lerna": "^3.11.0"
+    "lerna": "^3.13.3"
   },
   "scripts": {
-    "test": "lerna run test",
-    "postinstall": "lerna bootstrap"
+    "ci-coverage": "lerna run ci-coverage",
+    "postinstall": "lerna bootstrap",
+    "test": "lerna run test"
   }
 }
