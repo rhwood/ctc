@@ -5,7 +5,7 @@
     "ctc": "./packages/ctc-cli/bin/run"
   },
   "devDependencies": {
-    "lerna": "^3.15.0"
+    "lerna": "^3.16.1"
   },
   "scripts": {
     "ci-coverage": "lerna run ci-coverage",
