@@ -12,7 +12,7 @@
     "@oclif/config": "1.13.3",
     "@oclif/parser": "3.8.4",
     "@oclif/plugin-autocomplete": "0.1.4",
-    "@oclif/plugin-help": "2.2.1",
+    "@oclif/plugin-help": "2.2.2",
     "@oclif/plugin-not-found": "1.2.3",
     "@types/fs-extra": "8.0.1",
     "@types/json-socket": "0.1.17",
