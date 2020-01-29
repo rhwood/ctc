@@ -18,7 +18,7 @@
     "@types/json-socket": "0.1.17",
     "@types/node-ipc": "9.1.2",
     "@types/npmlog": "4.1.2",
-    "cli-ux": "5.4.3",
+    "cli-ux": "5.4.4",
     "fs-extra": "8.1.0",
     "json-socket": "0.3.0",
     "npmlog": "4.1.2",
