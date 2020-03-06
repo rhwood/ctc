@@ -42,26 +42,27 @@ export default class Init extends Command {
       cli.error(`Port "${flags.port}" is not a networkable port.`, {exit: false})
     }
     this.createProjectDir(args.path, flags.overwrite)
-      .then(() => {
-        this.createConfig(flags.name, (flags.port) ? Number(flags.port) : 4242, (flags.socket) ? flags.socket : '')
-          .then(config => {
-            let project = new CtcProject(args.path, config)
-            project.save().catch((error: Error) => {
-              cli.error(`Unable to write project: ${error.message}`, {exit: false})
-            })
-          })
-          .catch()
-      }, rejection => { cli.error(rejection, {exit: false}) })
+    .then(() => {
+      this.createConfig(flags.name, (flags.port) ? Number(flags.port) : 4242, (flags.socket) ? flags.socket : '')
+      .then(config => {
+        const project = new CtcProject(args.path, config)
+        project.save().catch((error: Error) => {
+          cli.error(`Unable to write project: ${error.message}`, {exit: false})
+        })
+      })
       .catch()
+    }, rejection => {
+      cli.error(rejection, {exit: false})
+    })
+    .catch()
   }
 
   async createProjectDir(dir: string, overwrite: boolean) {
     if (fs.pathExistsSync(dir)) {
       if (!overwrite) {
-        return Promise.reject('Project directory already exists.')
-      } else {
-        fs.removeSync(dir)
+        return Promise.reject(new Error('Project directory already exists.'))
       }
+      fs.removeSync(dir)
     }
     fs.mkdirsSync(dir)
   }

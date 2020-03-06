@@ -29,7 +29,7 @@ export default class Status extends Command {
     pid: flags.integer({
       char: 'P',
       description: 'CTC process id',
-      exclusive: ['server', 'port']
+      exclusive: ['server', 'port'],
     }),
     port: flags.integer({
       char: 'p',
@@ -41,7 +41,7 @@ export default class Status extends Command {
       description: 'server CTC process is running on',
       dependsOn: ['port'],
       exclusive: ['pid'],
-    })
+    }),
   }
 
   static args = [{name: 'path', descripton: 'project directory', default: path.resolve()}]
@@ -51,14 +51,14 @@ export default class Status extends Command {
     if (flags.pid) {
       this.statusPID(flags.pid)
     } else if (flags.port) {
-      this.sendServer((flags.server !== undefined) ? flags.server : 'localhost', flags.port)
+      this.sendServer((flags.server === undefined) ? 'localhost' : flags.server, flags.port)
     } else {
       this.statusProject(args.path)
     }
   }
 
   sendStatus(socket: JsonSocket) {
-    socket.sendMessage({command: 'status'}, () => {})
+    socket.sendMessage({command: 'status'}, () => { /* do nothing */ })
     socket.on('message', message => {
       cli.info(JSON.stringify(message, null, 2))
       socket.end()
@@ -66,30 +66,34 @@ export default class Status extends Command {
   }
 
   sendSocket(socket: string) {
-    let connection = new JsonSocket(new net.Socket())
+    const connection = new JsonSocket(new net.Socket())
     connection.connect(socket)
-    connection.on('connect', () => { this.sendStatus(connection) })
+    connection.on('connect', () => {
+      this.sendStatus(connection)
+    })
   }
 
   sendServer(server: string, port: number) {
-    let connection = new JsonSocket(new net.Socket())
+    const connection = new JsonSocket(new net.Socket())
     connection.connect(port, server)
-    connection.on('connect', () => { this.sendStatus(connection) })
+    connection.on('connect', () => {
+      this.sendStatus(connection)
+    })
   }
 
   statusPID(pid: number) {
-    let cache = path.resolve(this.config.cacheDir, `pid-${pid}.json`)
+    const cache = path.resolve(this.config.cacheDir, `pid-${pid}.json`)
     if (fs.pathExistsSync(cache)) {
       fs.readJson(cache)
-        .then((json: PID) => {
-          if (json.control.port) {
-            this.sendServer(json.control.hostname, json.control.port)
-          } else {
-            this.sendSocket(json.control.socket)
-          }
-        }, () => {
-          cli.error(`Unable to read connection data for process ID ${pid}`, {exit: false})
-        })
+      .then((json: PID) => {
+        if (json.control.port) {
+          this.sendServer(json.control.hostname, json.control.port)
+        } else {
+          this.sendSocket(json.control.socket)
+        }
+      }, () => {
+        cli.error(`Unable to read connection data for process ID ${pid}`, {exit: false})
+      })
     } else {
       cli.error(`No CTC process with id ${pid} appears to be running`, {exit: false})
     }

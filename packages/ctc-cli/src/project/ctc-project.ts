@@ -12,9 +12,9 @@ export class CtcProject {
   }
 
   static isLocked(dir: string): boolean {
-    let lock: string = Path.join(dir, 'lock')
+    const lock: string = Path.join(dir, 'lock')
     if (fs.existsSync(lock)) {
-      let pid = Number(fs.readFileSync(lock))
+      const pid = Number(fs.readFileSync(lock))
       try {
         process.kill(pid, 0)
         return true
@@ -28,18 +28,18 @@ export class CtcProject {
   }
 
   static createConfig(name: string, port: number, socket: string): CtcProjectConfig {
-    let hostname = 'localhost'
-    let config: CtcProjectConfig = {
+    const hostname = 'localhost'
+    const config: CtcProjectConfig = {
       name,
       control: {hostname, port, socket},
       http: {hostname, port: 0, secure: false},
-      ctc: {version}
+      ctc: {version},
     }
     return config
   }
 
   static readConfig(path: string): CtcProjectConfig {
-    let json = Path.join(path, 'project.json')
+    const json = Path.join(path, 'project.json')
     let config: CtcProjectConfig
     try {
       config = fs.readJsonSync(json)
@@ -53,6 +53,7 @@ export class CtcProject {
   }
 
   readonly config: CtcProjectConfig
+
   readonly path: string
 
   constructor(path: string, config?: CtcProjectConfig | undefined) {
@@ -64,20 +65,20 @@ export class CtcProject {
   }
 
   public lock() {
-    let lock: string = Path.join(this.path, 'lock')
+    const lock: string = Path.join(this.path, 'lock')
     try {
       fs.writeFileSync(lock, process.pid)
-    } catch (err) {
-      log.error('ERROR', 'Unable to lock project: %s', err)
+    } catch (error) {
+      log.error('ERROR', 'Unable to lock project: %s', error)
     }
   }
 
   public unlock() {
-    let lock: string = Path.join(this.path, 'lock')
+    const lock: string = Path.join(this.path, 'lock')
     try {
       fs.removeSync(lock)
-    } catch (err) {
-      log.error('ERROR', 'Unable to unlock project: %s', err)
+    } catch (error) {
+      log.error('ERROR', 'Unable to unlock project: %s', error)
     }
   }
 

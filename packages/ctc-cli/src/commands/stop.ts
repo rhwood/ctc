@@ -29,7 +29,7 @@ export default class Stop extends Command {
     pid: flags.integer({
       char: 'P',
       description: 'CTC process id',
-      exclusive: ['server', 'port']
+      exclusive: ['server', 'port'],
     }),
     port: flags.integer({
       char: 'p',
@@ -51,41 +51,45 @@ export default class Stop extends Command {
     if (flags.pid) {
       this.stopPID(flags.pid)
     } else if (flags.port) {
-      this.stopServer((flags.server !== undefined) ? flags.server : 'localhost', flags.port)
+      this.stopServer((flags.server === undefined) ? 'localhost' : flags.server, flags.port)
     } else {
       this.stopProject(args.path)
     }
   }
 
   sendStop(socket: JsonSocket) {
-    socket.sendEndMessage({command: 'stop'}, () => {})
+    socket.sendEndMessage({command: 'stop'}, () => { /* do nothing */ })
   }
 
   stopSocket(socket: string) {
-    let connection = new JsonSocket(new net.Socket())
+    const connection = new JsonSocket(new net.Socket())
     connection.connect(socket)
-    connection.on('connect', () => { this.sendStop(connection) })
+    connection.on('connect', () => {
+      this.sendStop(connection)
+    })
   }
 
   stopServer(server: string, port: number) {
-    let connection = new JsonSocket(new net.Socket())
+    const connection = new JsonSocket(new net.Socket())
     connection.connect(port, server)
-    connection.on('connect', () => { this.sendStop(connection) })
+    connection.on('connect', () => {
+      this.sendStop(connection)
+    })
   }
 
   stopPID(pid: number) {
-    let cache = path.resolve(this.config.cacheDir, `pid-${pid}.json`)
+    const cache = path.resolve(this.config.cacheDir, `pid-${pid}.json`)
     if (fs.pathExistsSync(cache)) {
       fs.readJson(cache)
-        .then((json: PID) => {
-          if (json.control.port) {
-            this.stopServer(json.control.hostname, json.control.port)
-          } else {
-            this.stopSocket(json.control.socket)
-          }
-        }, () => {
-          cli.error(`Unable to read connection data for process ID ${pid}`, {exit: false})
-        })
+      .then((json: PID) => {
+        if (json.control.port) {
+          this.stopServer(json.control.hostname, json.control.port)
+        } else {
+          this.stopSocket(json.control.socket)
+        }
+      }, () => {
+        cli.error(`Unable to read connection data for process ID ${pid}`, {exit: false})
+      })
     } else {
       cli.error(`No CTC process with id ${pid} appears to be running`, {exit: false})
     }

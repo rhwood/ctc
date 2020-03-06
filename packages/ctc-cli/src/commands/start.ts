@@ -42,7 +42,7 @@ export default class Start extends Server {
   }
 
   runDaemon(args: any, flags: any) {
-    let dargs: string[] = [process.argv[1], 'server']
+    const dargs: string[] = [process.argv[1], 'server']
     dargs.push((flags.daemon ? '--daemon' : '--no-daemon'))
     if (flags.port) {
       dargs.push('--port=' + flags.port)
@@ -55,7 +55,7 @@ export default class Start extends Server {
 
     const server = spawn(process.argv[0], dargs, {
       detached: true,
-      stdio: 'ignore'
+      stdio: 'ignore',
     })
     server.unref()
     this.debug(`Server PID is: ${server.pid}`)

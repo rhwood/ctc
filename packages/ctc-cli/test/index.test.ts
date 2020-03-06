@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-import {run} from '../src/index'
+import {run} from '../src'
 
 describe('index', () => {
   test.it(() => {
