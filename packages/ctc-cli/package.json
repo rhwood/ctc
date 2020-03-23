@@ -19,7 +19,7 @@
     "@types/node-ipc": "9.1.2",
     "@types/npmlog": "4.1.2",
     "cli-ux": "5.4.5",
-    "fs-extra": "8.1.0",
+    "fs-extra": "9.0.0",
     "json-socket": "0.3.0",
     "npmlog": "4.1.2",
     "tslib": "1.11.1"
