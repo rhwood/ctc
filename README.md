@@ -15,6 +15,10 @@ The CTC application is intended to become a lightweight control panel for model 
 
 CTC is released under the [Apache 2.0 license](LICENSE)
 
+# Requirements
+
+Only [Active LTS Node versions](https://nodejs.org/en/about/releases/) are supported.
+
 # Install
 
 CTC is not yet published on npm, so see _Develop_ below to install CTC.

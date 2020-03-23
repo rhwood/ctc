@@ -1,8 +1,8 @@
 language: node_js
 node_js:
 - stable
+- '12'
 - '10'
-- '8'
 env:
   global:
     CC_TEST_REPORTER_ID=a811fc1f4c1439ca4194fdf29d585b42bb82e311c26979fdacfb0286fea87b4e
