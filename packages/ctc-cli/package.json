@@ -8,7 +8,7 @@
   },
   "bugs": "https://github.com/rhwood/ctc/issues",
   "dependencies": {
-    "@oclif/command": "1.5.19",
+    "@oclif/command": "1.5.20",
     "@oclif/config": "1.15.1",
     "@oclif/parser": "3.8.4",
     "@oclif/plugin-autocomplete": "0.1.5",
