@@ -67,7 +67,7 @@ export class CtcProject {
   public lock() {
     const lock: string = Path.join(this.path, 'lock')
     try {
-      fs.writeFileSync(lock, process.pid)
+      fs.writeFileSync(lock, process.pid.toString())
     } catch (error) {
       log.error('ERROR', 'Unable to lock project: %s', error)
     }

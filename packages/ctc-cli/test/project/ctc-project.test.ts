@@ -34,11 +34,11 @@ describe('CtcProject.isLocked', () => {
     expect(CtcProject.isLocked(ctx.dir)).to.be.false
   })
   project.it('locked with valid PID', ctx => {
-    fs.writeFileSync(ctx.lock, process.pid)
+    fs.writeFileSync(ctx.lock, process.pid.toString())
     expect(CtcProject.isLocked(ctx.dir)).to.be.true
   })
   project.it('locked with invalid PID', ctx => {
-    fs.writeFileSync(ctx.lock, 1)
+    fs.writeFileSync(ctx.lock, '1')
     expect(CtcProject.isLocked(ctx.dir)).to.be.false
   })
 })
