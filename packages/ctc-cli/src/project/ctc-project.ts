@@ -85,4 +85,8 @@ export class CtcProject {
   public async save() {
     return fs.writeJson(Path.join(this.path, 'project.json'), this.config, {spaces: 2})
   }
+
+  public saveSync() {
+    return fs.writeJsonSync(Path.join(this.path, 'project.json'), this.config, {spaces: 2})
+  }
 }

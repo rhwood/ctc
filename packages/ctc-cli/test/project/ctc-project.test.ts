@@ -1,8 +1,6 @@
 import {expect, test} from '@oclif/test'
 import * as fs from 'fs-extra'
 import * as path from 'path'
-// import * as waitUntil from 'wait-until'
-const waitUntil = require('wait-until')
 
 import {CtcProject} from '../../src/project/ctc-project'
 
@@ -95,20 +93,14 @@ describe('CtcProject constructor from file', () => {
     fs.removeSync(ctx.dir)
     fs.mkdirsSync(ctx.dir)
     const project = new CtcProject(ctx.dir, CtcProject.createConfig('test', 0, ''))
-    project.save().catch(() => { /* do nothing */ })
+    project.saveSync()
   })
   .it('valid project.json', ctx => {
-    waitUntil()
-    .interval(100)
-    .times(20)
-    .condition(() => fs.existsSync(ctx.json))
-    .done(() => {
-      const project = new CtcProject(ctx.dir)
-      expect(project.config.name).to.equal('test')
-      expect(project.config.control.hostname).to.equal('localhost')
-      expect(project.config.control.port).to.equal(0)
-      expect(project.config.control.socket).to.equal('')
-    })
+    const project = new CtcProject(ctx.dir)
+    expect(project.config.name).to.equal('test')
+    expect(project.config.control.hostname).to.equal('localhost')
+    expect(project.config.control.port).to.equal(0)
+    expect(project.config.control.socket).to.equal('')
   })
   pt
   .do(ctx => {
