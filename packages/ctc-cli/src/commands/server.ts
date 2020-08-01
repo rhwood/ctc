@@ -67,6 +67,7 @@ export default class Server extends Command {
       if (await cli.confirm('Initialize a project?')) {
         Init.run([args.path]).then(() => {
           if (CtcProject.isProject(args.path)) {
+            // eslint-disable-next-line no-warning-comments
             // TODO: figure out how to pass rejection from Init.run so if is not needed
             new CtcServer(this.getProject(args, flags), this.config).start()
           }
