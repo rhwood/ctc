@@ -3,6 +3,7 @@
 Centralized Traffic Control for Model Railroads
 
 [![Build Status](https://travis-ci.com/rhwood/ctc.svg?branch=master)](https://travis-ci.com/rhwood/ctc)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=rhwood_ctc&metric=alert_status)](https://sonarcloud.io/dashboard?id=rhwood_ctc)
 [![Known Vulnerabilities](https://snyk.io/test/github/rhwood/ctc/badge.svg)](https://snyk.io/test/github/rhwood/ctc)
 [![Maintainability](https://api.codeclimate.com/v1/badges/aee03e1f6f30309cc7a1/maintainability)](https://codeclimate.com/github/rhwood/ctc/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/aee03e1f6f30309cc7a1/test_coverage)](https://codeclimate.com/github/rhwood/ctc/test_coverage)
