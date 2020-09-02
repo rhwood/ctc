@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "@oclif/dev-cli": "1.22.2",
-    "@oclif/test": "1.2.6",
+    "@oclif/test": "1.2.7",
     "@types/chai": "4.2.12",
     "@types/mocha": "8.0.3",
     "@types/node": "14.6.2",
