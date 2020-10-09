@@ -23,7 +23,7 @@
     "fs-extra": "9.0.1",
     "json-socket": "0.3.0",
     "npmlog": "4.1.2",
-    "tslib": "2.0.1"
+    "tslib": "2.0.2"
   },
   "devDependencies": {
     "@oclif/dev-cli": "1.22.2",
