@@ -10,6 +10,7 @@ before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
 script:
+  - npm install
   - npm run ci-coverage
 after_script:
   - ./cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.ctc-cli.json packages/ctc-cli/coverage/lcov.info  # Format ctc-cli coverage
