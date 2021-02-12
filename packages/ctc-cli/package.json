@@ -36,7 +36,7 @@
     "eslint-config-oclif": "3.1.0",
     "eslint-config-oclif-typescript": "0.2.0",
     "globby": "11.0.2",
-    "mocha": "8.2.1",
+    "mocha": "8.3.0",
     "nock": "13.0.7",
     "nyc": "15.1.0",
     "source-map-support": "0.5.19",
